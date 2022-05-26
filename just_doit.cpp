@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include<cstdio>
 #include<string.h>
 #include<vector>
 #include<algorithm>
@@ -34,7 +35,7 @@ int main()
 		mb = GetMouseMsg();
 		FlushMouseMsgBuffer();
 		switch (mb.uMsg) {
-		case WM_LBUTTONDOWN:
+		case WM_LBUTTONUP:
 			if (mb.x >= 450 && mb.x <= 750 && mb.y >= 300 && mb.y <= 330) {
 				//输入学工号 2021 0013 0164 长度为12位的是学生，教师号码为10位
 				getid();
@@ -42,7 +43,38 @@ int main()
 			if (mb.x >= 450 && mb.x <= 750 && mb.y >= 370 && mb.y <= 400) {
 				getcode();
 			}
-
+			if (mb.x >= 540 && mb.x <= 615 && mb.y >= 490 && mb.y <= 540) {
+				fillroundrect(400, 350, 800, 450, 10, 10);
+				f.lfHeight = 20;
+				settextcolor(RGB(0, 47, 167));
+				if (check()) {
+					outtextxy(500, 370, "登录中");
+					change = 0;
+					Sleep(50);
+				}
+				else {
+					outtextxy(420, 370, "用户不存在或密码错误");
+					Sleep(100);
+					b.setb();
+				}
+			}
+			if (mb.x > 625 && mb.x < 700 && mb.y>490 && mb.y < 540) {
+				fillroundrect(400, 350, 800, 450, 10, 10);
+				f.lfHeight = 20;
+				setfillcolor(WHITE);
+				settextcolor(RGB(0, 47, 167));
+				if (addaccount()) {
+					outtextxy(460, 390, "注册成功,将自动登录");
+					change = 0;
+					Sleep(50);
+					while (1);
+				}
+				else {
+					outtextxy(450, 370, "用户已存在");
+					Sleep(100);
+					b.setb();
+				}
+			}
 			break;
 
 		case WM_MOUSEMOVE:
@@ -51,44 +83,12 @@ int main()
 				fillrectangle(540, 490, 615, 540);
 				outtextxy(550, 500, "登录");
 				FlushMouseMsgBuffer();
-				MOUSEMSG m = GetMouseMsg();
-				if (m.uMsg == WM_LBUTTONUP) {
-					fillroundrect(400, 350, 800, 450, 10, 10);
-					f.lfHeight = 20; 
-					settextcolor(RGB(0, 47, 167));
-					if (check()) {
-						outtextxy(500, 370, "登录中");
-						change = 0;
-						Sleep(50);
-					}
-					else {
-						outtextxy(420, 370, "用户不存在或密码错误");
-						Sleep(100);
-						b.setb();
-					}
-				}
 			}
 			else if (mb.x > 625 && mb.x < 700 && mb.y>490 && mb.y < 540) {
 				setfillcolor(RGB(211, 211, 211));
 				fillrectangle(625, 490, 700, 540);
 				outtextxy(635, 500, "注册");
 				FlushMouseMsgBuffer();
-				MOUSEMSG m = GetMouseMsg();
-				if (m.uMsg == WM_LBUTTONUP) {
-					fillroundrect(400, 350, 800, 450, 10, 10);
-					f.lfHeight = 20;
-					settextcolor(RGB(0, 47, 167));
-					if (addaccount()) {
-						outtextxy(420, 370, "注册成功,将自动登录");
-						change = 0;
-						Sleep(50);
-					}
-					else {
-						outtextxy(450, 370, "用户已存在");
-						Sleep(100);
-						b.setb();
-					}
-				}
 			}
 			else {
 				setfillcolor(WHITE);
@@ -107,24 +107,25 @@ int main()
 
 bool addaccount() {
 	string code, id;
-	freopen("tempcode.txt", "r", stdin);
-	cin >> code;
-	freopen("tempid.txt", "r", stdin);
-	cin >> id;
+	if(freopen("tempcode.txt", "r", stdin))
+		cin >> code;
+	if(freopen("tempid.txt", "r", stdin))
+		cin >> id;
 	int len = id.length();
-	if (len == 10)freopen("Students.txt", "a+", stdin);
-	else if (len == 12)freopen("Teacher.txt", "a+", stdin);
-	int n;
-	cin >> n;
+	fclose(stdin);
+	if (len == 10)freopen("Students.txt", "r", stdin);
+	else if (len == 12)freopen("Teacher.txt", "r", stdin);
+	
 	string all[2];
-	for (int i = 1; i <= n; i++) {
-		cin >> all[0] >> all[1];
+	while (cin >> all[0] >> all[1]) {
 		if (all[0] == id) {
 			return 0;
 		}
 	}
-	freopen("Students.txt", "a+", stdout);
-	cout << id <<" " << code;
+	fclose(stdin);
+	if (len == 10)freopen("Students.txt", "a+", stdout);
+	else if (len == 12)freopen("Teacher.txt", "a+", stdout);
+	cout << id << " " << code << endl;
 	return 1;
 }
 bool check() {	
@@ -310,251 +311,3 @@ void getcode() {
 	cout << code;
 	return;
 }
-/*
-////////////////////////////////////////
-// 程序：基于 EasyX 的文本框 + 按钮控件
-// 作者：BestAns
-// 编译环境：VS2019，EasyX_20211109
-// 编写日期：2021-10-28
-// 最后修改：2021-11-20
-//#include <graphics.h>
-
-
-
-// 实现文本框控件
-class EasyTextBox
-{
-private:
-	int left = 0, top = 0, right = 0, bottom = 0;	// 控件坐标
-	char* text = NULL;							// 控件内容
-	size_t maxlen = 0;									// 文本框最大内容长度
-
-public:
-	void Create(int x1, int y1, int x2, int y2, int max)
-	{
-		maxlen = max;
-		text = new char[maxlen];
-		text[0] = 0;
-		left = x1, top = y1, right = x2, bottom = y2;
-
-		// 绘制用户界面
-		Show();
-	}
-
-	~EasyTextBox()
-	{
-		if (text != NULL)
-			delete[] text;
-	}
-
-	char* Text()
-	{
-		return text;
-	}
-
-	bool Check(int x, int y)
-	{
-		return (left <= x && x <= right && top <= y && y <= bottom);
-	}
-
-	// 绘制界面
-	void Show()
-	{
-		// 备份环境值
-		int oldlinecolor = getlinecolor();
-		int oldbkcolor = getbkcolor();
-		int oldfillcolor = getfillcolor();
-
-		setlinecolor(LIGHTGRAY);		// 设置画线颜色
-		setbkcolor(0xeeeeee);			// 设置背景颜色
-		setfillcolor(0xeeeeee);			// 设置填充颜色
-		fillrectangle(left, top, right, bottom);
-		outtextxy(left + 10, top + 5, text);
-
-		// 恢复环境值
-		setlinecolor(oldlinecolor);
-		setbkcolor(oldbkcolor);
-		setfillcolor(oldfillcolor);
-	}
-
-	void OnMessage()
-	{
-		// 备份环境值
-		int oldlinecolor = getlinecolor();
-		int oldbkcolor = getbkcolor();
-		int oldfillcolor = getfillcolor();
-
-		setlinecolor(BLACK);			// 设置画线颜色
-		setbkcolor(WHITE);				// 设置背景颜色
-		setfillcolor(WHITE);			// 设置填充颜色
-		fillrectangle(left, top, right, bottom);
-		outtextxy(left + 10, top + 5, text);
-
-		int width = textwidth(text);	// 字符串总宽度
-		int counter = 0;				// 光标闪烁计数器
-		bool binput = true;				// 是否输入中
-
-		ExMessage msg;
-		while (binput){
-			while (binput && peekmessage(&msg, EM_MOUSE | EM_CHAR, false))	// 获取消息，但不从消息队列拿出			{
-				if (msg.message == WM_LBUTTONDOWN){
-					// 如果鼠标点击文本框外面，结束文本输入
-					if (msg.x < left || msg.x > right || msg.y < top || msg.y > bottom){
-						binput = false;
-						break;
-					}
-				}
-				else if (msg.message == WM_CHAR){
-					size_t len =strlen(text);
-					switch (msg.ch){
-					case '\b':				// 用户按退格键，删掉一个字符
-						if (len > 0){
-							text[len - 1] = 0;
-							width = textwidth(text);
-							counter = 0;
-							clearrectangle(left + 10 + width, top + 1, right - 1, bottom - 1);
-						}
-						break;
-					case '\r':				// 用户按回车键，结束文本输入
-					case '\n':
-						binput = false;
-						break;
-					default:				// 用户按其它键，接受文本输入
-						if (len < maxlen - 1)
-						{
-							text[len++] = msg.ch;
-							text[len] = 0;
-
-							clearrectangle(left + 10 + width + 1, top + 3, left + 10 + width + 1, bottom - 3);	// 清除画的光标
-							width = textwidth(text);				// 重新计算文本框宽度
-							counter = 0;
-							outtextxy(left + 10, top + 5, text);		// 输出新的字符串
-						}
-					}
-				}
-				peekmessage(NULL, EM_MOUSE | EM_CHAR);				// 从消息队列抛弃刚刚处理过的一个消息
-			}
-
-			// 绘制光标（光标闪烁周期为 20ms * 32）
-			counter = (counter + 1) % 32;
-			if (counter < 16)
-				line(left + 10 + width + 1, top + 3, left + 10 + width + 1, bottom - 3);				// 画光标
-			else
-				clearrectangle(left + 10 + width + 1, top + 3, left + 10 + width + 1, bottom - 3);		// 擦光标
-
-			// 延时 20ms
-			Sleep(20);
-		}
-
-		clearrectangle(left + 10 + width + 1, top + 3, left + 10 + width + 1, bottom - 3);	// 擦光标
-
-		// 恢复环境值
-		setlinecolor(oldlinecolor);
-		setbkcolor(oldbkcolor);
-		setfillcolor(oldfillcolor);
-
-		Show();
-	}
-};
-
-
-
-// 实现按钮控件
-class EasyButton
-{
-private:
-	int left = 0, top = 0, right = 0, bottom = 0;	// 控件坐标
-	char * text = NULL;							// 控件内容
-	void (*userfunc)() = NULL;						// 控件消息
-
-public:
-	void Create(int x1, int y1, int x2, int y2, const char* title, void (*func)())
-	{
-		text = new char[strlen(title) + 1];
-		for (int i = 0; i <= strlen(title) + 1; i++) {
-			*(text + i) = *(title + i);
-		}
-		left = x1, top = y1, right = x2, bottom = y2;
-		userfunc = func;
-
-		// 绘制用户界面
-		Show();
-	}
-	~EasyButton()
-	{
-		if (text != NULL)
-			delete[] text;
-	}
-
-	bool Check(int x, int y)
-	{
-		return (left <= x && x <= right && top <= y && y <= bottom);
-	}
-	// 绘制界面
-	void Show()
-	{
-		int oldlinecolor = getlinecolor();
-		int oldbkcolor = getbkcolor();
-		int oldfillcolor = getfillcolor();
-
-		setlinecolor(BLACK);			// 设置画线颜色
-		setbkcolor(WHITE);				// 设置背景颜色
-		setfillcolor(WHITE);			// 设置填充颜色
-		fillrectangle(left, top, right, bottom);
-		outtextxy(left + (right - left - textwidth(text) + 1) / 2, top + (bottom - top - textheight(text) + 1) / 2, text);
-
-		setlinecolor(oldlinecolor);
-		setbkcolor(oldbkcolor);
-		setfillcolor(oldfillcolor);
-	}
-	void OnMessage()
-	{
-		if (userfunc != NULL)
-			userfunc();
-	}
-};
-// 定义控件
-EasyTextBox txtName;
-EasyTextBox txtPwd;
-EasyButton btnOK;
-// 按钮 btnOK 的点击事件
-void On_btnOk_Click()
-{
-	;
-}
-
-// 主函数
-int main(){
-	// 创建图形窗口
-	initgraph(640, 480);
-	setbkcolor(0xeeeeee);// 简单绘制界面
-	cleardevice();
-	settextcolor(BLACK);
-	outtextxy(50, 55, "用户名：");
-	txtName.Create(120, 50, 400, 75, 10);						// 创建用户名文本框控件
-	outtextxy(50, 105, "密　码：");
-	txtPwd.Create(120, 100, 400, 125, 10);						// 创建密码文本框控件
-	btnOK.Create(320, 150, 400, 175, "OK", On_btnOk_Click);	// 创建按钮控件
-
-	ExMessage msg;
-	while (true)
-	{
-		msg = getmessage(EM_MOUSE);			// 获取消息输入
-
-		if (msg.message == WM_LBUTTONDOWN)
-		{
-			// 判断控件
-			if (txtName.Check(msg.x, msg.y))	txtName.OnMessage();
-
-			// 判断控件
-			if (txtPwd.Check(msg.x, msg.y))		txtPwd.OnMessage();
-
-			// 判断控件
-			if (btnOK.Check(msg.x, msg.y))		btnOK.OnMessage();
-		}
-	}
-
-	// 关闭绘图窗口
-	closegraph();
-	return 0;
-}*/
