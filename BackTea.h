@@ -7,6 +7,7 @@
 class BackTea :
     public Background
 {
+public:
     void setb();
     void Exit();
 };

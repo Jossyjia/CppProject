@@ -7,6 +7,7 @@
 class BackStu :
     public Background
 {
+public:
     void setb();
     void Exit();
 };

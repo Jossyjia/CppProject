@@ -55,18 +55,22 @@ int main()
 
 void GetPerson() {
 	cin.clear();
-	unsigned long long i;
+	unsigned long long id;
 	freopen("Students.txt", "r", stdin);
-	while (cin >> i >> Ms[i]);
+	while (cin >> id ) {
+		cin >> Ms[id];
+	}
 	cin.clear();
 	freopen("Teachers.txt", "r", stdin);
-	while (cin >> i >> Mt[i]);
+	while (cin >> id ) {
+		cin >> Mt[id];
+	}
 	cin.clear();
 }
 void start() {
+	Background b;
+	b.setb();
 	while (change) {
-		Background b;
-		b.setb();
 		LOGFONT f;
 		gettextstyle(&f);
 		MOUSEMSG mb;
@@ -85,8 +89,7 @@ void start() {
 				fillroundrect(400, 350, 800, 450, 10, 10);
 				f.lfHeight = 20;
 				settextcolor(RGB(0, 47, 167));
-				account_type = check();
-				if (account_type) {
+				if (check()) {
 					outtextxy(500, 370, "登录中");
 					change = 0;
 					Sleep(500);
@@ -102,15 +105,14 @@ void start() {
 				f.lfHeight = 20;
 				setfillcolor(WHITE);
 				settextcolor(RGB(0, 47, 167));
-				account_type = addaccount();
-				if (account_type) {
+				if (addaccount()) {
 					outtextxy(460, 390, "注册成功,将自动登录");
 					change = 0;
 					Sleep(2000);
 				}
 				else {
 					outtextxy(460, 370, "用户已存在");
-					Sleep(200);
+					Sleep(500);
 					b.setb();
 				}
 			}
@@ -151,6 +153,7 @@ bool addaccount() {
 	cin.clear();
 	fclose(stdin);
 	int len = account_type;
+	unsigned long long precode = Ms[id];
 	if (len == 12) {
 		if (Ms[id])return 0;
 		else Ms[id] = code;
@@ -259,7 +262,7 @@ void getid() {
 	}
 	freopen("tempid.txt", "w", stdout);
 	cout << ha(id);
-	Sleep(200);//做出一个通知的延时效果
+	Sleep(500);//做出一个通知的延时效果
 	fclose(stdout);
 	return;
 }
