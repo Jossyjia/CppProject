@@ -67,7 +67,7 @@ int main()
 					outtextxy(460, 390, "注册成功,将自动登录");
 					change = 0;
 					Sleep(50);
-					while (1);
+					Sleep(2000);
 				}
 				else {
 					outtextxy(450, 370, "用户已存在");
@@ -109,12 +109,13 @@ bool addaccount() {
 	string code, id;
 	if(freopen("tempcode.txt", "r", stdin))
 		cin >> code;
-	if(freopen("tempid.txt", "r", stdin))
-		cin >> id;
+	cin.clear();
+	freopen("tempid.txt", "r", stdin);
+	cin >> id;
+	cin.clear();
 	int len = id.length();
-	fclose(stdin);
-	if (len == 10)freopen("Students.txt", "r", stdin);
-	else if (len == 12)freopen("Teacher.txt", "r", stdin);
+	if (len == 12)freopen("Students.txt", "r", stdin);
+	else if (len == 10)freopen("Teacher.txt", "r", stdin);
 	
 	string all[2];
 	while (cin >> all[0] >> all[1]) {
@@ -123,8 +124,8 @@ bool addaccount() {
 		}
 	}
 	fclose(stdin);
-	if (len == 10)freopen("Students.txt", "a+", stdout);
-	else if (len == 12)freopen("Teacher.txt", "a+", stdout);
+	if (len == 12)freopen("Students.txt", "a+", stdout);
+	else if (len == 10)freopen("Teacher.txt", "a+", stdout);
 	cout << id << " " << code << endl;
 	return 1;
 }
@@ -222,6 +223,7 @@ void getid() {
 	}
 	freopen("tempid.txt", "w", stdout);
 	cout << id;
+	Sleep(100);
 	return;
 }
 void getcode() {
@@ -307,7 +309,9 @@ void getcode() {
 	gettextstyle(&out);
 	settextstyle(25, 0, "黑体");
 	setlinecolor(WHITE);
+	fclose(stdout);
 	freopen("tempcode.txt", "w", stdout);
+	int l = strlen(code);
 	cout << code;
 	return;
 }
