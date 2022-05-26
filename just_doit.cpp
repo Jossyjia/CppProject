@@ -26,6 +26,9 @@ bool check();
 bool addaccount();
 int main()
 {
+	HWND hWnd = GetHWnd();
+	SetWindowText(hWnd, ("杨晔嘉的cpp大作业 选课系统"));
+	initgraph(1200, 800);
 	Background b;
 	b.setb();
 	while (change) {
@@ -50,11 +53,11 @@ int main()
 				if (check()) {
 					outtextxy(500, 370, "登录中");
 					change = 0;
-					Sleep(50);
+					Sleep(500);
 				}
 				else {
 					outtextxy(420, 370, "用户不存在或密码错误");
-					Sleep(100);
+					Sleep(500);
 					b.setb();
 				}
 			}
@@ -66,12 +69,11 @@ int main()
 				if (addaccount()) {
 					outtextxy(460, 390, "注册成功,将自动登录");
 					change = 0;
-					Sleep(50);
 					Sleep(2000);
 				}
 				else {
-					outtextxy(450, 370, "用户已存在");
-					Sleep(100);
+					outtextxy(460, 370, "用户已存在");
+					Sleep(200);
 					b.setb();
 				}
 			}
@@ -110,7 +112,7 @@ bool addaccount() {
 	if(freopen("tempcode.txt", "r", stdin))
 		cin >> code;
 	cin.clear();
-	freopen("tempid.txt", "r", stdin);
+	if(freopen("tempid.txt", "r", stdin))
 	cin >> id;
 	cin.clear();
 	int len = id.length();
@@ -127,22 +129,23 @@ bool addaccount() {
 	if (len == 12)freopen("Students.txt", "a+", stdout);
 	else if (len == 10)freopen("Teacher.txt", "a+", stdout);
 	cout << id << " " << code << endl;
+	cin.clear();
 	return 1;
 }
 bool check() {	
 	string code,id;
-	freopen("tempcode.txt", "r", stdin);
-	cin >> code;
-	freopen("tempid.txt", "r", stdin);
-	cin >> id;
+	cin.clear();
+	if(freopen("tempcode.txt", "r", stdin))
+		cin >> code;
+	cin.clear();
+	if(freopen("tempid.txt", "r", stdin))
+		cin >> id;
+	cin.clear();
 	int len = id.length();
-	if (len == 10)freopen("Students.txt", "r", stdin);
-	else if (len == 12)freopen("Teacher.txt", "r", stdin);
-	int n;
-	cin >> n;
+	if (len == 12)freopen("Students.txt", "r", stdin);
+	else if (len == 10)freopen("Teacher.txt", "r", stdin);
 	string all[2];
-	for (int i = 1; i <= n; i++) {
-		cin >> all[0] >> all[1];
+	while(cin >> all[0] >> all[1]) {
 		if (all[0] == id) {
 			if (all[1] == code) {
 				return 1;

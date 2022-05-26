@@ -3,9 +3,7 @@
 void Background::setb()
 {
 		
-		HWND hWnd = GetHWnd();
-		SetWindowText(hWnd, ("杨晔嘉的cpp大作业 选课系统"));
-		initgraph(1200, 800);
+		
 		IMAGE Background;
 		loadimage(NULL, _T("Scene.PNG"), 1200, 800, 0);
 		putimage(0, 0, &Background);
@@ -15,7 +13,8 @@ void Background::setb()
 		f.lfHeight = 60;						
 		_tcscpy_s(f.lfFaceName, _T("等线"));		
 		f.lfQuality = PROOF_QUALITY;		
-		settextstyle(&f);					
+		settextstyle(&f);
+		settextcolor(WHITE);
 		outtextxy(480, 20, "选课系统");
 		setfillcolor(RGB(191,219,255));
 		fillroundrect(300, 200, 900, 600, 10, 10);
