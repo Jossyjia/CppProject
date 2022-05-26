@@ -41,8 +41,8 @@ int main()
 	HWND hWnd = GetHWnd();
 	SetWindowText(hWnd, ("杨晔嘉的cpp大作业 选课系统"));
 	initgraph(1200, 800);
-	GetPerson();
-	start();
+	//GetPerson();
+	//start();
 
 	if (account_type == 12) {
 		BackStu b;
