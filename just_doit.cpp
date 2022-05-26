@@ -6,8 +6,11 @@
 #include <graphics.h>
 #include <conio.h>
 #include<fstream>
+#include<map>
 
 #include"Background.h"
+#include"BackStu.h"
+#include"BackTea.h"
 #include"Lesson.h"
 #include"LessonStu.h"
 #include"LessonTea.h"
@@ -15,23 +18,55 @@
 #include"PersonStu.h"
 #include"PersonTea.h"
 
+#define h(c) c>=0&&c<=9?c:(c-'a'+11)
 
 using namespace std;
+
+map < unsigned long long, unsigned long long> Ms,Mt;
 vector <PersonStu> student;
 vector<PersonTea> teacher;
+const int Seed = 67;
 bool change = 1;
+int account_type = 12;
+unsigned long long ha(string a);
+
+void start();
 void getid();
 void getcode();
 bool check();
 bool addaccount();
+void GetPerson();
 int main()
 {
 	HWND hWnd = GetHWnd();
 	SetWindowText(hWnd, ("杨晔嘉的cpp大作业 选课系统"));
 	initgraph(1200, 800);
-	Background b;
-	b.setb();
+	GetPerson();
+	start();
+
+	if (account_type == 12) {
+		BackStu b;
+		b.setb();
+		
+	}
+	while (1);
+    return 0;
+}
+
+void GetPerson() {
+	cin.clear();
+	unsigned long long i;
+	freopen("Students.txt", "r", stdin);
+	while (cin >> i >> Ms[i]);
+	cin.clear();
+	freopen("Teachers.txt", "r", stdin);
+	while (cin >> i >> Mt[i]);
+	cin.clear();
+}
+void start() {
 	while (change) {
+		Background b;
+		b.setb();
 		LOGFONT f;
 		gettextstyle(&f);
 		MOUSEMSG mb;
@@ -50,7 +85,8 @@ int main()
 				fillroundrect(400, 350, 800, 450, 10, 10);
 				f.lfHeight = 20;
 				settextcolor(RGB(0, 47, 167));
-				if (check()) {
+				account_type = check();
+				if (account_type) {
 					outtextxy(500, 370, "登录中");
 					change = 0;
 					Sleep(500);
@@ -66,7 +102,8 @@ int main()
 				f.lfHeight = 20;
 				setfillcolor(WHITE);
 				settextcolor(RGB(0, 47, 167));
-				if (addaccount()) {
+				account_type = addaccount();
+				if (account_type) {
 					outtextxy(460, 390, "注册成功,将自动登录");
 					change = 0;
 					Sleep(2000);
@@ -103,37 +140,33 @@ int main()
 		}
 		
 	}
-
-    return 0;
 }
-
 bool addaccount() {
-	string code, id;
+	unsigned long long code, id;
 	if(freopen("tempcode.txt", "r", stdin))
 		cin >> code;
 	cin.clear();
 	if(freopen("tempid.txt", "r", stdin))
-	cin >> id;
+		cin >> id;
 	cin.clear();
-	int len = id.length();
-	if (len == 12)freopen("Students.txt", "r", stdin);
-	else if (len == 10)freopen("Teacher.txt", "r", stdin);
-	
-	string all[2];
-	while (cin >> all[0] >> all[1]) {
-		if (all[0] == id) {
-			return 0;
-		}
-	}
 	fclose(stdin);
-	if (len == 12)freopen("Students.txt", "a+", stdout);
-	else if (len == 10)freopen("Teacher.txt", "a+", stdout);
+	int len = account_type;
+	if (len == 12) {
+		if (Ms[id])return 0;
+		else Ms[id] = code;
+		freopen("Students.txt", "a+", stdout);
+	}
+	else if (len == 10) {
+		if (Mt[id])return 0;
+		else Mt[id] = code;
+		freopen("Teachers.txt", "a+", stdout);
+	}
 	cout << id << " " << code << endl;
-	cin.clear();
+	fclose(stdout);
 	return 1;
 }
 bool check() {	
-	string code,id;
+	unsigned long long code,id;
 	cin.clear();
 	if(freopen("tempcode.txt", "r", stdin))
 		cin >> code;
@@ -141,19 +174,15 @@ bool check() {
 	if(freopen("tempid.txt", "r", stdin))
 		cin >> id;
 	cin.clear();
-	int len = id.length();
-	if (len == 12)freopen("Students.txt", "r", stdin);
-	else if (len == 10)freopen("Teacher.txt", "r", stdin);
-	string all[2];
-	while(cin >> all[0] >> all[1]) {
-		if (all[0] == id) {
-			if (all[1] == code) {
-				return 1;
-			}
-			else break;
-		}
+	int len = account_type;
+	if (len == 10) {
+		if (Mt[id] != code)return 0;
+		return 1;
 	}
-	return 0;
+	else if (len == 12) {
+		if (Ms[id] != code)return 0;
+		return 1;
+	}
 }
 void getid() {
 	fillrectangle(450, 300, 750, 330);
@@ -161,8 +190,9 @@ void getid() {
 	setfillcolor(RGB(191, 219, 255));
 	fillrectangle(750, 290, 900, 340);
 	setfillcolor(WHITE);
-	char id[20]; for (int i = 0; i < 20; i++)id[i] = '\0';
-	//char* id;
+	char id[20]; 
+	for (int i = 0; i < 20; i++)
+		id[i] = '\0';
 	int len = 0;
 	bool in = 1;
 	ExMessage msg;
@@ -205,7 +235,7 @@ void getid() {
 					}
 				}
 				Sleep(100);
-				outtextxy(450 + len * 13, 298, '|');
+				outtextxy(450 + len * 13, 298, '|');//光标
 			}
 		}
 	}
@@ -216,29 +246,38 @@ void getid() {
 	if (len == 12) {
 		rectangle(795, 295, 860, 330);
 		outtextxy(800, 300, "学生");
+		account_type = len;
 	}
 	else if (len == 10) {
 		rectangle(795, 295, 860, 330);
 		outtextxy(800, 300, "教师");
+		account_type = len;
 	}
 	else {
 		outtextxy(760, 300, "用户不存在");
+		return;
 	}
 	freopen("tempid.txt", "w", stdout);
-	cout << id;
-	Sleep(100);
+	cout << ha(id);
+	Sleep(200);//做出一个通知的延时效果
+	fclose(stdout);
 	return;
 }
 void getcode() {
-	char code[20]; for (int i = 0; i < 20; i++)code[i] = '\0';
-	char oucd[20]; for (int i = 0; i < 20; i++)oucd[i] = '\0';
+	char code[20]; 
+	for (int i = 0; i < 20; i++)
+		code[i] = '\0';
+	char oucd[20]; 
+	for (int i = 0; i < 20; i++)
+		oucd[i] = '\0';
 	fillrectangle(450, 370, 750, 400);
 	setlinecolor(RGB(191, 219, 255));
 	setfillcolor(RGB(191, 219, 255));
 	fillrectangle(750, 290, 900, 340);
 	setfillcolor(WHITE);
 	int len = 0;
-	bool in = 1,look=1;
+	bool in = 1;
+	bool look = 1;
 	ExMessage msg;
 	LOGFONT out;
 	gettextstyle(&out);
@@ -315,6 +354,15 @@ void getcode() {
 	fclose(stdout);
 	freopen("tempcode.txt", "w", stdout);
 	int l = strlen(code);
-	cout << code;
+	cout <<ha(code);
 	return;
+}
+unsigned long long ha(string a) {
+	unsigned long long re = 0;
+	for (int i = a.size() - 1; i >= 0; i--) {
+		re += h(a[i]);
+		re *= Seed;
+	}
+	re /= Seed;
+	return re;
 }
