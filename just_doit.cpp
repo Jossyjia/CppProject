@@ -46,12 +46,94 @@ int main()
 
 	if (account_type == 12) {
 		BackStu b;
+		b.setX();
+		Sleep(2000);
+		b.setS();
+		Sleep(2000);
 		b.setb();
 		
+		/*
+		while (change) {
+			LOGFONT f;
+			gettextstyle(&f);
+			MOUSEMSG mb;
+			mb = GetMouseMsg();
+			FlushMouseMsgBuffer();
+			switch (mb.uMsg) {
+			case WM_LBUTTONUP:
+				if (mb.x >= 450 && mb.x <= 750 && mb.y >= 300 && mb.y <= 330) {
+					//输入学工号 2021 0013 0164 长度为12位的是学生，教师号码为10位
+					getid();
+				}
+				if (mb.x >= 450 && mb.x <= 750 && mb.y >= 370 && mb.y <= 400) {
+					getcode();
+				}
+				if (mb.x >= 540 && mb.x <= 615 && mb.y >= 490 && mb.y <= 540) {
+					fillroundrect(400, 350, 800, 450, 10, 10);
+					f.lfHeight = 20;
+					settextcolor(RGB(0, 47, 167));
+					if (check()) {
+						outtextxy(500, 370, "登录中");
+						change = 0;
+						Sleep(500);
+					}
+					else {
+						outtextxy(420, 370, "用户不存在或密码错误");
+						Sleep(500);
+						b.setb();
+					}
+				}
+				if (mb.x > 625 && mb.x < 700 && mb.y>490 && mb.y < 540) {
+					fillroundrect(400, 350, 800, 450, 10, 10);
+					f.lfHeight = 20;
+					setfillcolor(WHITE);
+					settextcolor(RGB(0, 47, 167));
+					if (addaccount()) {
+						outtextxy(460, 390, "注册成功,将自动登录");
+						change = 0;
+						Sleep(2000);
+					}
+					else {
+						outtextxy(460, 370, "用户已存在");
+						Sleep(500);
+						b.setb();
+					}
+				}
+				break;
+
+			case WM_MOUSEMOVE:
+				if (mb.x >= 540 && mb.x <= 615 && mb.y >= 490 && mb.y <= 540) {
+					setfillcolor(RGB(211, 211, 211));
+					fillrectangle(540, 490, 615, 540);
+					outtextxy(550, 500, "登录");
+					FlushMouseMsgBuffer();
+				}
+				else if (mb.x > 625 && mb.x < 700 && mb.y>490 && mb.y < 540) {
+					setfillcolor(RGB(211, 211, 211));
+					fillrectangle(625, 490, 700, 540);
+					outtextxy(635, 500, "注册");
+					FlushMouseMsgBuffer();
+				}
+				else {
+					setfillcolor(WHITE);
+					fillrectangle(540, 490, 615, 540);
+					fillrectangle(625, 490, 700, 540);
+					outtextxy(635, 500, "注册");
+					outtextxy(550, 500, "登录");
+				}
+				break;
+			}
+
+		}*/
 	}
 	else if (account_type == 10) {
 		BackTea b;
-		b.setb();
+		//b.setb();
+		//Sleep(2000);
+		b.setC();
+		//Sleep(2000);
+		//b.setK();
+
 	}
 	while (1);
     return 0;

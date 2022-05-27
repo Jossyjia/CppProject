@@ -12,7 +12,9 @@ private:
     bool gender=0;
     void resetP();
 public:
-    void setb();
+    void setb();//基本界面（我的课表
+    void setX();//选课界面
+    void setS();//分数界面
 };
 
 #endif // !_B_S_H

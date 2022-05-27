@@ -11,9 +11,11 @@ class Lesson
 {
 public:
 	const int credit, maxstu;
+	static int nowsdu;
 	Time time;
 	bool type;//1是必修 0是选修
+	char Tea[20]
 	Lesson  (int c=2,int m=16,int w=Sun,int o=1);
 };
 
-#endif // !_L_H
+#endif // !_L_H   

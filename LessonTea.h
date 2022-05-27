@@ -10,7 +10,6 @@ class LessonTea :
 public:
     void open();
     void del();
-    void addscore();
     void lookstu();
 };
 
