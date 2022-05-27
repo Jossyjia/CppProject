@@ -38,9 +38,3 @@ void Background::setb()
 			outtextxy(635, 500, "зЂВс");
 		}
 }
-
-void Background::Exit()
-{
-	closegraph();
-	exit(0);
-}

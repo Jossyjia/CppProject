@@ -8,7 +8,6 @@ class Background
 {
 public:
 	virtual void setb();
-	virtual void Exit();
 };
 
 #endif

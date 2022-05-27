@@ -1,10 +1,10 @@
 ﻿#include <iostream>
 #include<cstdio>
-#include<string.h>
 #include<vector>
 #include<algorithm>
 #include <graphics.h>
 #include <conio.h>
+#include<string.h>
 #include<fstream>
 #include<map>
 
@@ -27,7 +27,7 @@ vector <PersonStu> student;
 vector<PersonTea> teacher;
 const int Seed = 67;
 bool change = 1;
-int account_type = 12;
+int account_type = 10;
 unsigned long long ha(string a);
 
 void start();
@@ -48,6 +48,10 @@ int main()
 		BackStu b;
 		b.setb();
 		
+	}
+	else if (account_type == 10) {
+		BackTea b;
+		b.setb();
 	}
 	while (1);
     return 0;

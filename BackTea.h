@@ -9,7 +9,6 @@ class BackTea :
 {
 public:
     void setb();
-    void Exit();
 };
 
 #endif // _B_T_H

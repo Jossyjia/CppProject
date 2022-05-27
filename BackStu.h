@@ -7,9 +7,12 @@
 class BackStu :
     public Background
 {
+private:
+    IMAGE Background, Photo;
+    bool gender=0;
+    void resetP();
 public:
     void setb();
-    void Exit();
 };
 
 #endif // !_B_S_H
