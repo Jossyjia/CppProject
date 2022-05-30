@@ -7,10 +7,11 @@ using namespace std;
 class Person
 {
 private:
-	string id;
-	string code;
+	unsigned long long code, id;
 public:
-	virtual void lookschedule();
+	void setid(unsigned long long a);
+	void setcode(unsigned long long b);
+	virtual void lookschedule(){};
 };
 
 #endif

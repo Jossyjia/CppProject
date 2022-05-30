@@ -8,8 +8,6 @@ class PersonTea :
     public Person
 {
 public:
-    void launch();
-    void addscore();
     void lookschedule();
     LessonTea schedule[10][10];
 };
