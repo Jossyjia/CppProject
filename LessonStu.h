@@ -6,10 +6,12 @@ class LessonStu :
     private Lesson
 {
     friend class PersonStu;
-    LessonStu(const LessonStu& a);
-    void xuan();
-    void tui();
-    void lookscore();
-    void print();
+public:
+    LessonStu() {};
+    LessonStu& operator=(LessonStu& s);
+    bool done=0;
+    int score;
+    void setscore(int t) { score = t; };
+    void print(int x,int y);
 };
 #endif // !_L_S_H

@@ -27,7 +27,7 @@ vector <PersonStu> student;
 vector<PersonTea> teacher;
 const int Seed = 67;
 bool change = 1;
-int account_type = 10;
+int account_type = 12;
 unsigned long long ha(string a);
 
 void start();
@@ -46,10 +46,10 @@ int main()
 
 	if (account_type == 12) {
 		BackStu b;
-		b.setX();
-		Sleep(2000);
-		b.setS();
-		Sleep(2000);
+		//b.setX();
+		//Sleep(2000);
+		//b.setS();
+		//Sleep(2000);
 		b.setb();
 		
 		/*
@@ -128,8 +128,8 @@ int main()
 	}
 	else if (account_type == 10) {
 		BackTea b;
-		//b.setb();
-		//Sleep(2000);
+		b.setb();
+		Sleep(2000);
 		b.setC();
 		//Sleep(2000);
 		//b.setK();

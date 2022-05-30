@@ -9,8 +9,6 @@ class Person
 private:
 	string id;
 	string code;
-	//char id[20];ÕËºÅ
-	//char code[20];ÃÜÂë
 public:
 	virtual void lookschedule();
 };

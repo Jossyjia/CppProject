@@ -7,12 +7,10 @@
 class PersonStu :
     public Person
 {
-
-    
 public:
     void xuan(LessonStu a);
-    void tui();
-    void lookcredit();
+    void tui(int week,int order);
+    int lookscore(int w,int o);
     void lookschedule();
     LessonStu schedule[10][10];
 };
