@@ -1,4 +1,31 @@
 #include "LessonTea.h"
+#include"LessonStu.h"
+LessonTea& LessonTea::operator=(LessonTea& s)
+{
+	this->credit = s.credit;
+	this->maxstu = s.maxstu;
+	this->Name = s.Name;
+	this->nowstu = s.nowstu;
+	this->type = s.type;
+	this->Tea = s.Tea;
+	this->time = s.time;
+	return *this;
+	// TODO: 在此处插入 return 语句
+}
+
+
+LessonTea& LessonTea::operator=(LessonStu& s)
+{
+	this->credit = s.credit;
+	this->maxstu = s.maxstu;
+	this->Name = s.Name;
+	this->nowstu = s.nowstu;
+	this->type = s.type;
+	this->Tea = s.Tea;
+	this->time = s.time;
+	return *this;
+	// TODO: 在此处插入 return 语句
+}
 
 void LessonTea::open()
 {

@@ -1,5 +1,5 @@
 #include "LessonStu.h"
-
+#include "LessonTea.h"
 LessonStu& LessonStu::operator=(LessonStu& s)
 {
 	this->credit = s.credit;
@@ -28,4 +28,17 @@ void LessonStu::print(int x,int y)
 	if (credit == 1)outtextxy(xx + 90, yy + 40, "1");
 	else outtextxy(xx + 90, yy + 40, "1");
 
+}
+
+LessonStu& LessonStu::operator=(LessonTea& s)
+{
+	this->credit = s.credit;
+	this->maxstu = s.maxstu;
+	this->Name = s.Name;
+	this->nowstu = s.nowstu;
+	this->type = s.type;
+	this->Tea = s.Tea;
+	this->time = s.time;
+	return *this;
+	// TODO: 在此处插入 return 语句
 }

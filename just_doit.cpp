@@ -5,7 +5,10 @@
 #include <graphics.h>
 #include <conio.h>
 #include<string.h>
+#include<string>
 #include<fstream>
+#include<sstream>
+#include<iomanip>
 #include<map>
 
 #include"Background.h"
@@ -22,6 +25,7 @@
 
 using namespace std;
 
+vector<LessonStu> allLesson;
 map < unsigned long long, unsigned long long> Ms,Mt;
 map< unsigned long long, PersonStu> Stusaved;
 map< unsigned long long, PersonTea> Teasaved;
@@ -35,11 +39,14 @@ void getcode();
 bool check();
 bool addaccount();
 void GetPerson();
+void SetLesson(Lesson a,int n);
+void GetLesson();
 int main()
 {
 	HWND hWnd = GetHWnd();
 	SetWindowText(hWnd, ("杨晔嘉的cpp大作业 选课系统"));
 	initgraph(1200, 800);
+	//GetLesson();
 	//GetPerson();
 	//start();
 	unsigned long long ii = 0, cc = 0;
@@ -107,9 +114,47 @@ int main()
     return 0;
 }
 
+void GetLesson() {
+	//"Id" "week" "order" "credit" "type"  "maxstu"  "nowstu"  "Teacher"  "Name" 
+	ifstream csvfile("Lesson.csv", ios::in);
+	string line;
+	string field;
+	int n, c, m, w, o,t;
+	int i = 0;
+	getline(csvfile, line);
+	while (getline(csvfile, line)) {
+		string field;
+		istringstream sin(line);
+		getline(sin, field, ',');
+		n = atoi(field.c_str());
+		getline(sin, field, ',');
+		w = atoi(field.c_str());
+		getline(sin, field, ',');
+		o = atoi(field.c_str());
+		getline(sin, field, ',');
+		c = atoi(field.c_str());
+		getline(sin, field, ',');
+		t = atoi(field.c_str());
+		getline(sin, field, ',');
+		m = atoi(field.c_str());
+		getline(sin, field, ',');
+		int now = atoi(field.c_str());
+		getline(sin, field, ',');
+		string T = field;
+		getline(sin, field, ',');
+		string N = field;
+		LessonStu tmp (c, m, w, o, T, N, t);
+		tmp.setnow(now);
+		allLesson.push_back(tmp);
+		i++;
+	}
+
+	
+}
 void GetPerson() {
 	cin.clear();
 	unsigned long long id;
+	int L;
 	freopen("Students.txt", "r", stdin);
 	while (cin >> id ) {
 		cin >> Ms[id];
@@ -120,6 +165,30 @@ void GetPerson() {
 		cin >> Mt[id];
 	}
 	cin.clear();
+	freopen("Student.txt", "r", stdin);
+	while (cin >> id) {
+		cin >> L;
+		LessonStu tmp = allLesson[L];
+		Stusaved[id].schedule[tmp.time.weekday][tmp.time.order] = tmp;
+	}
+	cin.clear();
+	freopen("Teacher.txt", "r", stdin);
+	while (cin >> id) {
+		cin >> L;
+		LessonTea tmp;//直接在初始化的时候赋值就不可以
+		tmp=allLesson[L];
+		Teasaved[id].schedule[tmp.time.weekday][tmp.time.order] = tmp;
+	}
+	cin.clear();
+	
+}
+void SetLesson(Lesson a,int n) {
+
+	ofstream csvfile;
+	csvfile.open("Lesson.csv", ios::out|ios::app);
+	csvfile << "Id" << ',' << "week" << ',' << "order" << ',' << "credit" << ',' << "type" << "," << "maxstu" << "," << "nowstu" << "," << "Teacher" << "," << "Name" << endl;
+	csvfile << n << "," << a.time.weekday << ',' << a.time.order << ',' << a.credit << ',' << a.type << ',' << a.maxstu << ',' << a.nowstu << ',' << a.Tea << ',' << a.Name << endl;
+	csvfile.close();
 
 }
 void start() {
