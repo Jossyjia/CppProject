@@ -17,12 +17,12 @@ void BackTea::setb()
 	settextcolor(WHITE);
 	outtextxy(20, 175, "姓名:龙猫");
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 2; i++) {
 		rectangle(0, 150 + 80 * i, 150, 230 + 80 * (i + 1));
 	}
 	outtextxy(20, 255, "我的课表");
 	outtextxy(50, 335, "开课");
-	outtextxy(20, 415, "学生成绩");
+	//outtextxy(20, 415, "学生成绩");
 	
 	setfillcolor(BLACK);
 	fillroundrect(40, 715, 110, 755, 5, 5);
@@ -81,12 +81,12 @@ void BackTea::setK()
 	settextcolor(WHITE);
 	outtextxy(20, 175, "姓名:龙猫");
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 2; i++) {
 		rectangle(0, 150 + 80 * i, 150, 230 + 80 * (i + 1));
 	}
 	outtextxy(20, 255, "我的课表");
 	outtextxy(50, 335, "开课");
-	outtextxy(20, 415, "学生成绩");
+	//outtextxy(20, 415, "学生成绩");
 
 	setfillcolor(BLACK);
 	fillroundrect(40, 715, 110, 755, 5, 5);

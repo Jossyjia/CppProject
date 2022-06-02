@@ -26,8 +26,8 @@
 using namespace std;
 
 vector<LessonStu> allLesson;
-map < unsigned long long, unsigned long long> Ms,Mt;
-map< unsigned long long, PersonStu> Stusaved;
+map < unsigned long long, unsigned long long> Ms,Mt;//存储账号密码，登陆用
+map< unsigned long long, PersonStu> Stusaved;//存储账号对应的课表
 map< unsigned long long, PersonTea> Teasaved;
 const int Seed = 67;
 bool change = 1;
@@ -39,8 +39,12 @@ void getcode();
 bool check();
 bool addaccount();
 void GetPerson();
-void SetLesson(Lesson a,int n);
+void SetLesson(LessonStu a,int n);
 void GetLesson();
+void OutLessonT(unsigned long long id);
+void OutLessonS(unsigned long long id);
+void picklessons(PersonStu p);
+
 int main()
 {
 	HWND hWnd = GetHWnd();
@@ -79,6 +83,7 @@ int main()
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 310 && mb.y < 390) {
 					b.setX();
+					picklessons(p);
 					/*
 					if(选上课了){
 						加入到schedule里，
@@ -87,8 +92,18 @@ int main()
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 390 && mb.y <= 470) {
 					b.setS();
+					/*
+					是想实现但是由于时间问题并没有实现的功能，具体设想如下：
+					由于要存储的是每个学生对应课程的分数，那么会用到map<unsigned long long, <int,int> > 
+					（好像用multimap也可以？我没有这样用过，具体实现的时候会查明白的
+					然后就是make_pair<课程编号和成绩>
+					看分数的时候通过id-》课程编号-》具体课程的名字-》时间和分数
+					（需要在LessonStu里写一个专门的printf函数，上层是名字下层是score）
+					当然如果能用到MySQL就更好了
+					*/
 				}
 				if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
+					OutLessonS(p.Getid());
 					fillroundrect(400, 350, 800, 450, 10, 10);
 					f.lfHeight = 50;
 					settextstyle(&f);
@@ -114,10 +129,184 @@ int main()
     return 0;
 }
 
-void GetLesson() {
-	//"Id" "week" "order" "credit" "type"  "maxstu"  "nowstu"  "Teacher"  "Name" 
+void picklessons(PersonStu p) {
+	int week = 0, type = 0, credit = 0, order = 0;
+	while (change) {
+		LOGFONT f;
+		gettextstyle(&f);
+		MOUSEMSG mb;
+		mb = GetMouseMsg();
+		FlushMouseMsgBuffer();
+		switch (mb.uMsg) {
+		case WM_LBUTTONUP:
+			if (mb.x >= 0 && mb.x <= 150 && mb.y >= 230 && mb.y < 310) {
+				return;
+			}
+			if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
+				OutLessonS(p.Getid());
+				fillroundrect(400, 350, 800, 450, 10, 10);
+				f.lfHeight = 50;
+				settextstyle(&f);
+				setfillcolor(WHITE);
+				settextcolor(BLACK);
+				outtextxy(450, 375, "安全退出选课中..");
+				Sleep(2000); exit(0);
+			}
+			
+			if (mb.y >= 25 && mb.y <= 55) {
+				setlinecolor(WHITE);
+				for (int i = 0; i <= 6; i++)
+					rectangle(160 + 170 + 100 * i, 25, 160 + 170 + 100 * (i + 1), 55);
+				setlinecolor(DARKGRAY);	
+				if (mb.x >= 330 && mb.x <= 430 ) {
+					rectangle(330, 25, 430, 55);
+					week = Mon;
+				}
+				if (mb.x > 430 && mb.x < 530) {
+					rectangle(430, 25, 530, 55);
+					week = Tue;
+				}
+				if (mb.x >= 530 && mb.x < 630) {
+					rectangle(530, 25, 630, 55);
+					week = Wed;
+				}
+				if (mb.x >= 630 && mb.x < 730) {
+					rectangle(630, 25, 730, 55);
+					week = Thu;
+				}
+				if (mb.x >= 730 && mb.x < 830) {
+					rectangle(730, 25, 830, 55);
+					week = Fri;
+				}
+				if (mb.x >= 830 && mb.x < 930) {
+					rectangle(830, 25, 930, 55);
+					week = Sat;
+				}
+				if (mb.x >= 930 && mb.x <= 1030) {
+					rectangle(930, 25, 1030, 55);
+					week = Sun;
+				}
+			}
+			
+			if (mb.y >= 60 && mb.y <= 90) {
+				setlinecolor(WHITE);
+				for (int i = 0; i <= 4; i++)
+					rectangle(160 + 170 + 100 * i, 60, 160 + 170 + 100 * (i + 1), 90);
+				setlinecolor(DARKGRAY);
+				if (mb.x >= 330 && mb.x <= 430) {
+					rectangle(330, 60, 430, 90);
+					order = 1;
+				}
+				if (mb.x > 430 && mb.x < 530) {
+					rectangle(430, 60, 530, 90);
+					order = 2;
+				}
+				if (mb.x >= 530 && mb.x < 630) {
+					rectangle(530, 60, 630, 90);
+					order = 3;
+				}
+				if (mb.x >= 630 && mb.x < 730) {
+					rectangle(630, 60, 730, 90);
+					order = 4;
+				}
+				if (mb.x >= 730 && mb.x < 830) {
+					rectangle(730, 60, 830, 90);
+					order = 5;
+				}
+			}
+
+			if (mb.y >= 100 && mb.y <= 130) {
+				if (mb.x >= 330 && mb.x <= 530) {
+					setlinecolor(WHITE);
+					rectangle(330, 100, 430, 130);
+					rectangle(430, 100, 530, 130);
+					setlinecolor(DARKGRAY);
+					if (mb.x < 430) {
+						rectangle(330, 100, 430, 130);
+						credit = 1;
+					}
+					else {
+						rectangle(430, 100, 530, 130);
+						credit = 2;
+					}
+				}
+				else if (mb.x >= 830 && mb.x <= 1030) {
+					setlinecolor(WHITE);
+					rectangle(930, 100, 1030, 130);
+					rectangle(830, 100, 930, 130);
+					setlinecolor(DARKGRAY);
+					if (mb.x < 930) {
+						rectangle(830, 100, 930, 130);
+						type = 0;
+					}
+					else {
+						rectangle(930, 100, 1030, 130);
+						type = 1;
+					}
+				}
+			}
+			break;
+
+		}//switch
+
+	}//which
+	setlinecolor(WHITE);
+	change = 1;
+}
+void OutLessonS(unsigned long long id) {
+	freopen("Student.txt", "a+", stdout);
+	PersonStu tmp = Stusaved[id];
+	int x = 0;
+	for (int i = 0; i <= 6; i++) {
+		for (int j = 0; j <= 4; j++) {
+			if (tmp.schedule[i][j].done)x++;
+		}
+	}
+	cout << x<<" ";//先存一共有几个课
+	for (int i = 0; i <= 6; i++) {
+		for (int j = 0; j <= 4; j++) {
+			if (tmp.schedule[i][j].done) {
+				for (int k = 0; k < allLesson.size(); k++) {
+					if (allLesson[k].Name == tmp.schedule[i][j].Name) {
+						cout << k << " ";
+						break;
+					}
+				}
+				//查找课程序号
+			}//已知
+		}
+	}
+	cout << endl;
+}
+void OutLessonT(unsigned long long id) {
+	freopen("Teacher.txt", "a+", stdout);
+	PersonTea tmp = Teasaved[id];
+	int x = 0;
+	for (int i = 0; i <= 6; i++) {
+		for (int j = 0; j <= 4; j++) {
+			if (tmp.schedule[i][j].done)x++;
+		}
+	}
+	cout << x << " ";
+	for (int i = 0; i <= 6; i++) {
+		for (int j = 0; j <= 4; j++) {
+			if (tmp.schedule[i][j].done) {
+				for (int k = 0; k < allLesson.size(); k++) {
+					if (allLesson[k].Name == tmp.schedule[i][j].Name) {
+						cout << k << " ";
+						break;
+					}
+				}
+				//查找
+			}//已知
+		}
+	}
+	cout << endl;
+}
+void GetLesson() {//用于把所有已经开设的课程放到有序号的表里
+	
 	ifstream csvfile("Lesson.csv", ios::in);
-	string line;
+	string line;//"Id" "week" "order" "credit" "type"  "maxstu"  "nowstu"  "Teacher"  "Name" 
 	string field;
 	int n, c, m, w, o,t;
 	int i = 0;
@@ -147,14 +336,12 @@ void GetLesson() {
 		tmp.setnow(now);
 		allLesson.push_back(tmp);
 		i++;
-	}
-
-	
+	}	
 }
-void GetPerson() {
+void GetPerson() {//用于读取已经存在的账号和账号相对应的课表，
 	cin.clear();
 	unsigned long long id;
-	int L;
+	int L,n;
 	freopen("Students.txt", "r", stdin);
 	while (cin >> id ) {
 		cin >> Ms[id];
@@ -167,22 +354,30 @@ void GetPerson() {
 	cin.clear();
 	freopen("Student.txt", "r", stdin);
 	while (cin >> id) {
-		cin >> L;
-		LessonStu tmp = allLesson[L];
-		Stusaved[id].schedule[tmp.time.weekday][tmp.time.order] = tmp;
+		cin >> n;
+		for (int i = 1; i <= n; i++) {
+			cin >> L;
+			LessonStu tmp = allLesson[L];
+			Stusaved[id].schedule[tmp.time.weekday][tmp.time.order] = tmp;
+		}
+		
 	}
 	cin.clear();
 	freopen("Teacher.txt", "r", stdin);
 	while (cin >> id) {
-		cin >> L;
-		LessonTea tmp;//直接在初始化的时候赋值就不可以
-		tmp=allLesson[L];
-		Teasaved[id].schedule[tmp.time.weekday][tmp.time.order] = tmp;
+		cin >> n;
+		for (int i = 1; i <= n; i++) {
+			cin >> L;
+			LessonTea tmp;//直接在初始化的时候赋值就不可以
+			tmp=allLesson[L];
+			Teasaved[id].schedule[tmp.time.weekday][tmp.time.order] = tmp;
+		}
+		
 	}
 	cin.clear();
 	
 }
-void SetLesson(Lesson a,int n) {
+void SetLesson(LessonStu a,int n) {
 
 	ofstream csvfile;
 	csvfile.open("Lesson.csv", ios::out|ios::app);
@@ -266,6 +461,7 @@ void start() {
 		}
 		
 	}
+	change = 1;
 }
 bool addaccount() {
 	unsigned long long code, id;

@@ -10,6 +10,7 @@ private:
 	unsigned long long code, id;
 public:
 	void setid(unsigned long long a);
+	unsigned long long Getid() { return id; }
 	void setcode(unsigned long long b);
 	virtual void lookschedule(){};
 };
