@@ -2,8 +2,10 @@
 #include<cstdio>
 #include<vector>
 #include<algorithm>
+#include<Windows.h>
 #include <graphics.h>
 #include <conio.h>
+#include<stdlib.h>
 #include<string.h>
 #include<string>
 #include<fstream>
@@ -22,7 +24,7 @@
 #include"PersonTea.h"
 
 #define h(c) c>=0&&c<=9?c:(c-'a'+11)
-
+#define inf 0x7f7f7f7f
 using namespace std;
 
 vector<LessonStu> allLesson;
@@ -44,14 +46,14 @@ void GetLesson();
 void OutLessonT(unsigned long long id);
 void OutLessonS(unsigned long long id);
 void picklessons(PersonStu p);
-
+void show(int t, int num);
 int main()
 {
 	HWND hWnd = GetHWnd();
 	SetWindowText(hWnd, ("杨晔嘉的cpp大作业 选课系统"));
 	initgraph(1200, 800);
-	//GetLesson();
-	//GetPerson();
+	GetLesson();
+	GetPerson();
 	//start();
 	unsigned long long ii = 0, cc = 0;
 	cin.clear();
@@ -129,8 +131,44 @@ int main()
     return 0;
 }
 
+void show(int t, int num) {
+	LessonStu a;
+	num--;
+	if (t - 1 >= 0 && t - 1 < allLesson.size())a = allLesson[t - 1];
+	else return;
+	//a=allLesson[t-1];
+	char k = 'a';
+	char* p = new char[30];
+	_itoa(a.time.weekday, p, 10);
+	outtextxy(230, 250 + 60 * num, p);
+	*p = k;
+	_itoa(a.time.order, p, 10);
+	outtextxy(300, 250 + 60 * num, p);
+	*p = k;
+	_itoa(a.credit, p, 10);
+	outtextxy(380, 250 + 60 * num, p);
+	*p = k;
+	if (a.type) {
+		outtextxy(420, 250 + 60 * num, "否");
+	}
+	else {
+		outtextxy(420, 250+60 * num, "是");
+	}
+	_itoa(a.maxstu, p, 10);
+	outtextxy(500, 250 + 60 * num, p);
+	*p = k;
+	_itoa(a.nowstu, p, 10);
+	outtextxy(565, 250 + 60 * num, p);
+	*p = k;
+	string box = a.Tea;
+	strcpy(p, box.c_str());
+	outtextxy(630, 250 + 60 * num, p);
+	box = a.Name;
+	strcpy(p, box.c_str());
+	outtextxy(760, 250 + 60 * num, p);
+}
 void picklessons(PersonStu p) {
-	int week = 0, type = 0, credit = 0, order = 0;
+	int week = inf, type = inf, credit = inf, order = inf;
 	while (change) {
 		LOGFONT f;
 		gettextstyle(&f);
@@ -248,9 +286,156 @@ void picklessons(PersonStu p) {
 			break;
 
 		}//switch
-
+		if (week != inf && type != inf && credit != inf && order != inf) {
+			change = 0;
+		}
 	}//which
 	setlinecolor(WHITE);
+	freopen("selected.txt", "w", stdout);
+	cout << week+1 << " " << order << " " << credit << " " << type << endl;
+	system("D:\sdu\cpp\project_rebuild\just_doit\dist\pythonlessons.exe");
+	fclose(stdout);
+	freopen("selected.txt", "r", stdin);
+	int a, i = 1;
+	int ooo[10];
+	
+	while (cin >> a) {
+		show(a, i);
+		ooo[i++] = a;
+	}
+	
+	while (change) {
+		LOGFONT f;
+		gettextstyle(&f);
+		MOUSEMSG mb;
+		mb = GetMouseMsg();
+		FlushMouseMsgBuffer();
+		switch (mb.uMsg) {
+		case WM_LBUTTONUP:
+			if (mb.x >= 0 && mb.x <= 150 && mb.y >= 230 && mb.y < 310) {
+				return;
+			}
+			if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
+				OutLessonS(p.Getid());
+				fillroundrect(400, 350, 800, 450, 10, 10);
+				f.lfHeight = 50;
+				settextstyle(&f);
+				setfillcolor(WHITE);
+				settextcolor(BLACK);
+				outtextxy(450, 375, "安全退出选课中..");
+				Sleep(2000); exit(0);
+			}
+
+			if (mb.y >= 25 && mb.y <= 55) {
+				setlinecolor(WHITE);
+				for (int i = 0; i <= 6; i++)
+					rectangle(160 + 170 + 100 * i, 25, 160 + 170 + 100 * (i + 1), 55);
+				setlinecolor(DARKGRAY);
+				if (mb.x >= 330 && mb.x <= 430) {
+					rectangle(330, 25, 430, 55);
+					week = Mon;
+				}
+				if (mb.x > 430 && mb.x < 530) {
+					rectangle(430, 25, 530, 55);
+					week = Tue;
+				}
+				if (mb.x >= 530 && mb.x < 630) {
+					rectangle(530, 25, 630, 55);
+					week = Wed;
+				}
+				if (mb.x >= 630 && mb.x < 730) {
+					rectangle(630, 25, 730, 55);
+					week = Thu;
+				}
+				if (mb.x >= 730 && mb.x < 830) {
+					rectangle(730, 25, 830, 55);
+					week = Fri;
+				}
+				if (mb.x >= 830 && mb.x < 930) {
+					rectangle(830, 25, 930, 55);
+					week = Sat;
+				}
+				if (mb.x >= 930 && mb.x <= 1030) {
+					rectangle(930, 25, 1030, 55);
+					week = Sun;
+				}
+			}
+
+			if (mb.y >= 60 && mb.y <= 90) {
+				setlinecolor(WHITE);
+				for (int i = 0; i <= 4; i++)
+					rectangle(160 + 170 + 100 * i, 60, 160 + 170 + 100 * (i + 1), 90);
+				setlinecolor(DARKGRAY);
+				if (mb.x >= 330 && mb.x <= 430) {
+					rectangle(330, 60, 430, 90);
+					order = 1;
+				}
+				if (mb.x > 430 && mb.x < 530) {
+					rectangle(430, 60, 530, 90);
+					order = 2;
+				}
+				if (mb.x >= 530 && mb.x < 630) {
+					rectangle(530, 60, 630, 90);
+					order = 3;
+				}
+				if (mb.x >= 630 && mb.x < 730) {
+					rectangle(630, 60, 730, 90);
+					order = 4;
+				}
+				if (mb.x >= 730 && mb.x < 830) {
+					rectangle(730, 60, 830, 90);
+					order = 5;
+				}
+			}
+
+			if (mb.y >= 100 && mb.y <= 130) {
+				if (mb.x >= 330 && mb.x <= 530) {
+					setlinecolor(WHITE);
+					rectangle(330, 100, 430, 130);
+					rectangle(430, 100, 530, 130);
+					setlinecolor(DARKGRAY);
+					if (mb.x < 430) {
+						rectangle(330, 100, 430, 130);
+						credit = 1;
+					}
+					else {
+						rectangle(430, 100, 530, 130);
+						credit = 2;
+					}
+				}
+				else if (mb.x >= 830 && mb.x <= 1030) {
+					setlinecolor(WHITE);
+					rectangle(930, 100, 1030, 130);
+					rectangle(830, 100, 930, 130);
+					setlinecolor(DARKGRAY);
+					if (mb.x < 930) {
+						rectangle(830, 100, 930, 130);
+						type = 0;
+					}
+					else {
+						rectangle(930, 100, 1030, 130);
+						type = 1;
+					}
+				}
+			}
+			
+			if (mb.x >= 1050 && mb.x <= 1150) {
+				int line = (mb.y - 240) / 60 + 1;
+				if (line <= 0)continue;
+				LessonStu wuwu = allLesson[ooo[line]];
+				if (!p.schedule[wuwu.time.weekday][wuwu.time.order].done) {
+					fillcircle(1100, 180 + line * 60 + 30, 5);
+					p.schedule[wuwu.time.weekday][wuwu.time.order] = wuwu;
+				}
+					
+			}
+			break;
+
+		}//switch
+		if (week != inf && type != inf && credit != inf && order != inf) {
+			change = 0;
+		}
+	}
 	change = 1;
 }
 void OutLessonS(unsigned long long id) {
@@ -381,7 +566,7 @@ void SetLesson(LessonStu a,int n) {
 
 	ofstream csvfile;
 	csvfile.open("Lesson.csv", ios::out|ios::app);
-	csvfile << "Id" << ',' << "week" << ',' << "order" << ',' << "credit" << ',' << "type" << "," << "maxstu" << "," << "nowstu" << "," << "Teacher" << "," << "Name" << endl;
+	//csvfile << "Id" << ',' << "week" << ',' << "order" << ',' << "credit" << ',' << "type" << "," << "maxstu" << "," << "nowstu" << "," << "Teacher" << "," << "Name" << endl;
 	csvfile << n << "," << a.time.weekday << ',' << a.time.order << ',' << a.credit << ',' << a.type << ',' << a.maxstu << ',' << a.nowstu << ',' << a.Tea << ',' << a.Name << endl;
 	csvfile.close();
 

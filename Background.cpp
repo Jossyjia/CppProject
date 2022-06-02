@@ -5,7 +5,7 @@ void Background::setb()
 		
 		
 		IMAGE Background;
-		loadimage(NULL, _T("Scene.PNG"), 1200, 800, 0);
+		loadimage(NULL, _T("Photos\\Scene.PNG"), 1200, 800, 0);
 		putimage(0, 0, &Background);
 		setbkmode(TRANSPARENT);
 		LOGFONT f;	

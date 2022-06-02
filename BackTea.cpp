@@ -3,9 +3,9 @@
 void BackTea::setb()
 {
 	IMAGE Background, Photo;
-	loadimage(&Background, _T("Long.jpg"), 1200, 800, 0);
+	loadimage(&Background, _T("Photos\\Long.jpg"), 1200, 800, 0);
 	putimage(0, 0, &Background);
-	loadimage(&Photo, _T("ÁúÃ¨.jpg"), 100, 100, 0);
+	loadimage(&Photo, _T("Photos\\ÁúÃ¨.jpg"), 100, 100, 0);
 	putimage(25, 25, &Photo);
 	setbkmode(TRANSPARENT);
 	LOGFONT f;
@@ -66,9 +66,9 @@ void BackTea::setK()
 {
 
 	IMAGE Background, Photo;
-	loadimage(&Background, _T("Long.jpg"), 1200, 800, 0);
+	loadimage(&Background, _T("Photos\\Long.jpg"), 1200, 800, 0);
 	putimage(0, 0, &Background);
-	loadimage(&Photo, _T("ÁúÃ¨.jpg"), 100, 100, 0);
+	loadimage(&Photo, _T("Photos\\ÁúÃ¨.jpg"), 100, 100, 0);
 	putimage(25, 25, &Photo);
 	rectangle(25, 25, 125, 125);
 	setbkmode(TRANSPARENT);
@@ -142,9 +142,9 @@ void BackTea::setK()
 void BackTea::setC()
 {
 	IMAGE Background, Photo;
-	loadimage(&Background, _T("Long.jpg"), 1200, 800, 0);
+	loadimage(&Background, _T("Photos\\Long.jpg"), 1200, 800, 0);
 	putimage(0, 0, &Background);
-	loadimage(&Photo, _T("ÁúÃ¨.jpg"), 100, 100, 0);
+	loadimage(&Photo, _T("Photos\\ÁúÃ¨.jpg"), 100, 100, 0);
 	putimage(25, 25, &Photo);
 	rectangle(25, 25, 125, 125);
 	setbkmode(TRANSPARENT);

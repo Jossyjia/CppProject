@@ -2,16 +2,16 @@
 
 void BackStu::resetP()
 {
-	loadimage(&Photo, _T("°×Áú.jpg"), 100, 100, 0);
+	loadimage(&Photo, _T("Photos\\°×Áú.jpg"), 100, 100, 0);
 	putimage(25, 25, &Photo);
 }
 
 void BackStu::setb()
 {
 	
-	loadimage(&Background, _T("Qian.jpg"), 1200, 800, 0);
+	loadimage(&Background, _T("Photos\\Qian.jpg"), 1200, 800, 0);
 	putimage(0, 0, &Background);
-	loadimage(&Photo, _T("Ç§Ñ°.jpg"), 100, 100, 0);
+	loadimage(&Photo, _T("Photos\\Ç§Ñ°.jpg"), 100, 100, 0);
 	putimage(25, 25, &Photo);
 	if (gender == 0)
 		resetP();
@@ -71,9 +71,9 @@ void BackStu::setb()
 
 void BackStu::setX()
 {
-	loadimage(&Background, _T("Qian.jpg"), 1200, 800, 0);
+	loadimage(&Background, _T("Photos\\Qian.jpg"), 1200, 800, 0);
 	putimage(0, 0, &Background);
-	loadimage(&Photo, _T("Ç§Ñ°.jpg"), 100, 100, 0);
+	loadimage(&Photo, _T("Photos\\Ç§Ñ°.jpg"), 100, 100, 0);
 	putimage(25, 25, &Photo);
 	if (gender == 0)
 		resetP();
@@ -144,9 +144,9 @@ void BackStu::setX()
 
 void BackStu::setS()
 {
-	loadimage(&Background, _T("Qian.jpg"), 1200, 800, 0);
+	loadimage(&Background, _T("Photos\\Qian.jpg"), 1200, 800, 0);
 	putimage(0, 0, &Background);
-	loadimage(&Photo, _T("Ç§Ñ°.jpg"), 100, 100, 0);
+	loadimage(&Photo, _T("Photos\\Ç§Ñ°.jpg"), 100, 100, 0);
 	putimage(25, 25, &Photo);
 	if (gender == 0)
 		resetP();

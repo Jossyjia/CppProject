@@ -9,9 +9,7 @@ class LessonStu :
     friend class PersonStu;
 public:
     LessonStu() {};
-    LessonStu(int c, int m, int w, int o, string T, string N, bool t) {
-        Lesson(c, m, w, o, T, N, t);
-    }
+    LessonStu(int c, int m, int w, int o, string T, string N, bool t) :Lesson(c, m, w, o, T, N, t){}
     LessonStu& operator=(LessonStu& s);
     LessonStu& operator=(LessonTea& s);
     bool done=0;
