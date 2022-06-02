@@ -137,7 +137,7 @@ void BackStu::setX()
 		}
 		rectangle(620, 180 + 60 * i, 750, 240 + 60 * i);
 		rectangle(750, 180 + 60 * i, 1050, 240 + 60 * i);
-		rectangle(1050, 180 + 60 * i, 1150, 240 + 60 * i);
+		rectangle(1055, 180 + 60 * i, 1150, 240 + 60 * i);
 	}
 
 }
