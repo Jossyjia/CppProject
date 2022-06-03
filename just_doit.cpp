@@ -25,6 +25,8 @@
 #include"PersonStu.h"
 #include"PersonTea.h"
 
+#pragma comment(lib,"Imm32.lib")
+
 #define h(c) c>=0&&c<=9?c:(c-'a'+11)
 #define inf 0x7f7f7f7f
 using namespace std;
@@ -35,7 +37,7 @@ map< unsigned long long, PersonStu> Stusaved;//存储账号对应的课表
 map< unsigned long long, PersonTea> Teasaved;
 const int Seed = 67;
 bool change = 1;
-int account_type = 12;
+int account_type = 10,all=0;
 unsigned long long ha(string a);
 void start();
 void getid();
@@ -47,10 +49,13 @@ void SetLesson(LessonStu a,int n);
 void GetLesson();
 void OutLessonT(unsigned long long id);
 void OutLessonS(unsigned long long id);
-void picklessons(PersonStu &p);
+void picklessons(PersonStu *p);
 void show(int t, int num);
 void py();
-
+void beginclasses(PersonTea *p);
+string getname();
+string gettea();
+void GetIMEString(HWND hWnd, string &str);
 int main()
 {
 	HWND hWnd = GetHWnd();
@@ -73,7 +78,7 @@ int main()
 		b.setb();
 		PersonStu p = Stusaved[ii];
 		p.setcode(cc);
-		p.setid(ii);
+		p.setid(ii);	
 		p.lookschedule();
 		while (change) {
 			LOGFONT f;
@@ -89,7 +94,7 @@ int main()
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 310 && mb.y < 390) {
 					b.setX();
-					picklessons(p);
+					picklessons(&p);
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 390 && mb.y <= 470) {
 					b.setS();
@@ -123,13 +128,171 @@ int main()
 	else if (account_type == 10) {
 		BackTea b;
 		b.setb();
-		PersonTea* p = new PersonTea;
+		PersonTea p = Teasaved[ii];
+		p.setcode(cc);
+		p.setid(ii);
+		p.lookschedule();
+		change = 1;
+		while (change) {
+			LOGFONT f;
+			gettextstyle(&f);
+			MOUSEMSG mb;
+			mb = GetMouseMsg();
+			FlushMouseMsgBuffer();
+			switch (mb.uMsg) {
+			case WM_LBUTTONUP:
+				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 230 && mb.y < 310) {
+					b.setb();
+					p.lookschedule();
+				}
+				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 310 && mb.y < 390) {
+					b.setK();
+					beginclasses(&p);
+					fillcircle(300, 300, 50);
+				}
+				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 390 && mb.y <= 470) {
+					b.setC();
+				}
+				if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
+					OutLessonS(p.Getid());
+					fillroundrect(400, 350, 800, 450, 10, 10);
+					f.lfHeight = 50;
+					settextstyle(&f);
+					setfillcolor(WHITE);
+					settextcolor(BLACK);
+					outtextxy(450, 375, "安全退出选课中..");
+					Sleep(2000); exit(0);
+				}
 
+				break;
+
+			}//switch
+		}
 	}
 	while (1);
     return 0;
 }
 
+void GetIMEString(HWND hWnd, string& str)
+{
+	HIMC hIMC = ImmGetContext(hWnd);//获取HIMC 
+	if (hIMC) {
+		static bool flag = false;
+		DWORD dwSize = ImmGetCompositionStringW(hIMC, GCS_COMPSTR, NULL, 0);
+		if (dwSize > 0) {
+			if (flag == false)
+			{
+				flag = true;
+			}
+		}
+		else if (dwSize == 0 && flag) {
+			int iSize;
+			LPSTR pszMultiByte = NULL;
+			int ChineseSimpleAcp = 936;
+			WCHAR* lpWideStr = NULL;
+			dwSize = ImmGetCompositionStringW(hIMC, GCS_RESULTSTR, NULL, 0);
+			if (dwSize > 0) {
+				dwSize += sizeof(WCHAR);
+				if (lpWideStr) {
+					delete[]lpWideStr;
+					lpWideStr = NULL;
+				}
+				lpWideStr = new WCHAR[dwSize];
+				memset(lpWideStr, 0, dwSize);
+				ImmGetCompositionStringW(hIMC, GCS_RESULTSTR, lpWideStr, dwSize);
+				iSize = WideCharToMultiByte(ChineseSimpleAcp, 0, lpWideStr, -1, NULL, 0, NULL, NULL);
+				if (pszMultiByte) {
+					delete[] pszMultiByte;
+					pszMultiByte = NULL;
+				}
+				pszMultiByte = new char[iSize + 1];
+				WideCharToMultiByte(ChineseSimpleAcp, 0, lpWideStr, -1, pszMultiByte, iSize, NULL, NULL);
+				pszMultiByte[iSize] = '\0';
+				str += pszMultiByte;
+				if (lpWideStr) {
+					delete[]lpWideStr;
+					lpWideStr = NULL;
+				}
+				if (pszMultiByte) {
+					delete[] pszMultiByte;
+					pszMultiByte = NULL;
+				}
+			}
+			flag = false;
+		}
+		ImmReleaseContext(hWnd, hIMC);
+	}
+}
+string getname() {
+	HWND hWnd = GetHWnd();
+	BeginBatchDraw(); 
+	string str;
+	while (true){
+		if (_kbhit()){
+			char c = _getch();
+			if (c == '\b'){
+				if (str.length() > 0){
+					if (str.at(str.length() - 1) & 0x8000)
+						str.erase(str.end() - 1);
+					str.erase(str.end() - 1);
+				}
+			}
+			else if (c == 27||c=='\r'||c=='\n') {
+				outtextxy(332, 148, str.c_str());
+				return str;
+			}
+			else {
+				str += c;
+			}
+		}
+		else {
+			GetIMEString(hWnd, str);
+		}
+		if (str.length() > 100)
+			str = ""; 
+		setfillcolor(DARKGRAY);
+		fillrectangle(330, 148, 700, 182);
+		outtextxy(332,148, str.c_str());
+		FlushBatchDraw();
+	}
+	return str;
+}
+string gettea() {
+	
+	HWND hWnd = GetHWnd();
+	BeginBatchDraw();
+	string str;
+	while (true) {
+		if (_kbhit()) {
+			char c = _getch();
+			if (c == '\b') {
+				if (str.length() > 0) {
+					if (str.at(str.length() - 1) & 0x8000)
+						str.erase(str.end() - 1);
+					str.erase(str.end() - 1);
+				}
+			}
+			else if (c == 27 || c == '\r' || c == '\n') {
+				outtextxy(832, 148, str.c_str());
+				return str;
+			}
+			else {
+				str += c;
+			}
+		}
+		else {
+			GetIMEString(hWnd, str);
+		}
+		if (str.length() > 100)
+			str = "";
+		setfillcolor(DARKGRAY);
+		fillrectangle(830, 148, 1030, 182);
+		outtextxy(832, 148, str.c_str());
+		FlushBatchDraw();
+	}
+	
+	return str;
+}
 void py() {
 	Py_Initialize();
 	int k = Py_IsInitialized();
@@ -187,7 +350,164 @@ void show(int t, int num) {
 	strcpy(p, box.c_str());
 	outtextxy(760, 250 + 60 * num, p);
 }
-void picklessons(PersonStu &p) {
+void beginclasses(PersonTea *p) {
+	int week = inf, type = inf, maxstu = 30, credit = inf, order = inf;
+	string name, tea;
+	while (change) {
+		LOGFONT f;
+		gettextstyle(&f);
+		MOUSEMSG mb;
+		mb = GetMouseMsg();
+		FlushMouseMsgBuffer();
+		switch (mb.uMsg) {
+		case WM_LBUTTONUP:
+			if (mb.x >= 0 && mb.x <= 150 && mb.y >= 230 && mb.y < 310) {
+				return;
+			}
+			if (mb.x >= 0 && mb.x <= 150 && mb.y >= 310 && mb.y < 390) {
+				return;
+			}
+
+			if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
+				OutLessonS(p->Getid());
+				fillroundrect(400, 350, 800, 450, 10, 10);
+				f.lfHeight = 50;
+				settextstyle(&f);
+				setfillcolor(WHITE);
+				settextcolor(BLACK);
+				outtextxy(450, 375, "安全退出选课中..");
+				Sleep(2000); exit(0);
+			}
+
+			if (mb.y >= 25 && mb.y <= 55) {
+				setlinecolor(WHITE);
+				for (int i = 0; i <= 6; i++)
+					rectangle(160 + 170 + 100 * i, 25, 160 + 170 + 100 * (i + 1), 55);
+				setlinecolor(DARKGRAY);
+				if (mb.x >= 330 && mb.x <= 430) {
+					rectangle(330, 25, 430, 55);
+					week = Mon;
+				}
+				if (mb.x > 430 && mb.x < 530) {
+					rectangle(430, 25, 530, 55);
+					week = Tue;
+				}
+				if (mb.x >= 530 && mb.x < 630) {
+					rectangle(530, 25, 630, 55);
+					week = Wed;
+				}
+				if (mb.x >= 630 && mb.x < 730) {
+					rectangle(630, 25, 730, 55);
+					week = Thu;
+				}
+				if (mb.x >= 730 && mb.x < 830) {
+					rectangle(730, 25, 830, 55);
+					week = Fri;
+				}
+				if (mb.x >= 830 && mb.x < 930) {
+					rectangle(830, 25, 930, 55);
+					week = Sat;
+				}
+				if (mb.x >= 930 && mb.x <= 1030) {
+					rectangle(930, 25, 1030, 55);
+					week = Sun;
+				}
+			}
+
+			if (mb.y >= 60 && mb.y <= 90) {
+				setlinecolor(WHITE);
+				for (int i = 0; i <= 4; i++)
+					rectangle(160 + 170 + 100 * i, 60, 160 + 170 + 100 * (i + 1), 90);
+				setlinecolor(DARKGRAY);
+				if (mb.x >= 330 && mb.x <= 430) {
+					rectangle(330, 60, 430, 90);
+					order = 1;
+				}
+				if (mb.x > 430 && mb.x < 530) {
+					rectangle(430, 60, 530, 90);
+					order = 2;
+				}
+				if (mb.x >= 530 && mb.x < 630) {
+					rectangle(530, 60, 630, 90);
+					order = 3;
+				}
+				if (mb.x >= 630 && mb.x < 730) {
+					rectangle(630, 60, 730, 90);
+					order = 4;
+				}
+				if (mb.x >= 730 && mb.x < 830) {
+					rectangle(730, 60, 830, 90);
+					order = 5;
+				}
+			}
+
+			if (mb.y >= 100 && mb.y <= 130) {
+				if (mb.x >= 330 && mb.x <= 530) {
+					setlinecolor(WHITE);
+					rectangle(330, 100, 430, 130);
+					rectangle(430, 100, 530, 130);
+					setlinecolor(DARKGRAY);
+					if (mb.x < 430) {
+						rectangle(330, 100, 430, 130);
+						credit = 1;
+					}
+					else {
+						rectangle(430, 100, 530, 130);
+						credit = 2;
+					}
+				}
+				else if (mb.x >= 830 && mb.x <= 1030) {
+					setlinecolor(WHITE);
+					rectangle(930, 100, 1030, 130);
+					rectangle(830, 100, 930, 130);
+					setlinecolor(DARKGRAY);
+					if (mb.x < 930) {
+						rectangle(830, 100, 930, 130);
+						type = 0;
+					}
+					else {
+						rectangle(930, 100, 1030, 130);
+						type = 1;
+					}
+				}
+			}
+			
+			if (mb.y >= 148 && mb.y <= 182) {
+				if (mb.x >= 330 && mb.x <= 700) {//name
+					name=getname();
+					outtextxy(332, 148, name.c_str());
+				}
+				if (mb.x >= 830 && mb.x <= 1030) {//tea
+					tea=gettea();
+					outtextxy(832, 148, tea.c_str());
+				}
+			}
+			break;
+		}//switch
+		if (week != inf && type != inf && credit != inf && order != inf ) {
+			if (name != "" && tea != "") {
+				change = 0;
+				setfillcolor(WHITE);
+				fillcircle(100, 100, 50);
+				outtextxy(620, 180, name.c_str());
+				outtextxy(620, 10, tea.c_str());
+			}
+			
+			
+		}
+	}//while
+	change = 1;
+	setfillcolor(RED);
+	fillcircle(200, 200, 100);
+	setfillcolor(WHITE);
+	LessonStu tmp(credit, maxstu, week, order, name, tea, type);
+	SetLesson(tmp, ++all);
+	p->schedule[week][order].done = 1;
+	p->schedule[week][order] = tmp;
+	int d = 1;
+	return;
+}
+void picklessons(PersonStu *p) {
 	
 	int week = inf, type = inf, credit = inf, order = inf;
 	while (change) {
@@ -206,7 +526,7 @@ void picklessons(PersonStu &p) {
 			}
 
 			if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
-				OutLessonS(p.Getid());
+				OutLessonS(p->Getid());
 				fillroundrect(400, 350, 800, 450, 10, 10);
 				f.lfHeight = 50;
 				settextstyle(&f);
@@ -311,25 +631,27 @@ void picklessons(PersonStu &p) {
 			break;
 		}//switch
 		if (week != inf && type != inf && credit != inf && order != inf) {
-			change = 0;fillcircle(100, 100, 50);
+			change = 0;//fillcircle(100, 100, 50);
 		}
 	}//which
 	change = 1;
 	setlinecolor(WHITE);
 	freopen("selected.txt", "w", stdout);
 	cout << week+1 << " " << order << " " << credit << " " << type << endl;
-	//ch
-	//py(); 
 	system("activate & conda activate environment1 && python D:\\sdu\\cpp\\project_rebuild\\just_doit\\picking.py");
 	fclose(stdout);
-	freopen("selected.txt", "r", stdin);
+	cin.clear();
+	FILE* re=freopen("selected.txt", "r", stdin);
 	int a=-1, i = 1;
 	int ooo[10];
+	
 	while (cin >> a) {
 		show(a, i);
 		ooo[i++] = a;
 	}
-	if (a == -1) {
+	fclose(stdin);
+	cin.clear();
+	if (a==-1) {
 		LOGFONT f;
 		gettextstyle(&f);
 		fillroundrect(400, 350, 800, 450, 10, 10);
@@ -355,7 +677,7 @@ void picklessons(PersonStu &p) {
 				return;
 			}
 			if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
-				OutLessonS(p.Getid());
+				OutLessonS(p->Getid());
 				fillroundrect(400, 350, 800, 450, 10, 10);
 				f.lfHeight = 50;
 				settextstyle(&f);
@@ -370,9 +692,10 @@ void picklessons(PersonStu &p) {
 				int line = (mb.y - 240) / 60+1 ;
 				if (line <= 0||line>=i)continue;
 				LessonStu wuwu = allLesson[ooo[line]-1];
-				if (!p.schedule[wuwu.time.weekday][wuwu.time.order].done) {
+				if (!p->schedule[wuwu.time.weekday][wuwu.time.order].done) {
 					fillcircle(1100, 180 + line * 60 + 30, 10);
-					p.schedule[wuwu.time.weekday][wuwu.time.order] = wuwu;
+					p->schedule[wuwu.time.weekday][wuwu.time.order] = wuwu;
+					p->schedule[wuwu.time.weekday][wuwu.time.order].done = 1;
 					//change = 0;
 				}
 			} 
@@ -467,6 +790,7 @@ void GetLesson() {//用于把所有已经开设的课程放到有序号的表里
 		allLesson.push_back(tmp);
 		i++;
 	}	
+	all = i;
 }
 void GetPerson() {//用于读取已经存在的账号和账号相对应的课表，
 	cin.clear();

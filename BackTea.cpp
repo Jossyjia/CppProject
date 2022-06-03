@@ -110,7 +110,9 @@ void BackTea::setK()
 	outtextxy(650, 100, "是否选修");	
 	outtextxy(200, 150, "课程名称"); 
 	setfillcolor(DARKGRAY);
-	fillrectangle(330, 150, 800, 180); 
+	fillrectangle(330, 148, 700, 182); 
+	fillrectangle(830, 148, 1030, 182);
+	outtextxy(710, 150, "教师名称");
 	setfillcolor(BLACK);
 	outtextxy(170 + 180 + 100 * 0, 25, "周一");//tchar类型涉及到互相转化的问题
 	outtextxy(170 + 180 + 100 * 1, 25, "周二");
