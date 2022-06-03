@@ -53,8 +53,8 @@ void picklessons(PersonStu *p);
 void show(int t, int num);
 void py();
 void beginclasses(PersonTea *p);
-string getname();
-string gettea();
+void getname(string &str);
+void gettea(string &str);
 void GetIMEString(HWND hWnd, string &str);
 int main()
 {
@@ -63,7 +63,7 @@ int main()
 	initgraph(1200, 800);
 	GetLesson();
 	GetPerson();
-	//start();
+	start();
 	unsigned long long ii = 0, cc = 0;
 	cin.clear();
 	if (freopen("tempcode.txt", "r", stdin))
@@ -74,12 +74,13 @@ int main()
 	cin.clear();
 	fclose(stdin);
 	if (account_type == 12) {
-		BackStu b;
-		b.setb();
-		PersonStu p = Stusaved[ii];
-		p.setcode(cc);
-		p.setid(ii);	
-		p.lookschedule();
+		BackStu *b=new BackStu;
+		b->setb();
+		PersonStu* p = new PersonStu;
+		*p=Stusaved[ii];
+		p->setcode(cc);
+		p->setid(ii);	
+		p->lookschedule();
 		while (change) {
 			LOGFONT f;
 			gettextstyle(&f);
@@ -89,15 +90,15 @@ int main()
 			switch (mb.uMsg) {
 			case WM_LBUTTONUP:
 				if (mb.x >=0 && mb.x <= 150 && mb.y >= 230 && mb.y < 310) {
-					b.setb();
-					p.lookschedule();
+					b->setb();
+					p->lookschedule();
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 310 && mb.y < 390) {
-					b.setX();
-					picklessons(&p);
+					b->setX();
+					picklessons(p);
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 390 && mb.y <= 470) {
-					b.setS();
+					b->setS();
 					/*
 					是想实现但是由于时间问题并没有实现的功能，具体设想如下：
 					由于要存储的是每个学生对应课程的分数，那么会用到map<unsigned long long, <int,int> > 
@@ -109,7 +110,7 @@ int main()
 					*/
 				}
 				if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
-					OutLessonS(p.Getid());
+					OutLessonS(p->Getid());
 					fillroundrect(400, 350, 800, 450, 10, 10);
 					f.lfHeight = 50;
 					settextstyle(&f);
@@ -126,12 +127,13 @@ int main()
 		}//which
 	}
 	else if (account_type == 10) {
-		BackTea b;
-		b.setb();
-		PersonTea p = Teasaved[ii];
-		p.setcode(cc);
-		p.setid(ii);
-		p.lookschedule();
+		BackTea *b=new BackTea;
+		b->setb();
+		PersonTea* p =new PersonTea; 
+		*p=Teasaved[ii];
+		p->setcode(cc);
+		p->setid(ii);
+		p->lookschedule();
 		change = 1;
 		while (change) {
 			LOGFONT f;
@@ -142,23 +144,23 @@ int main()
 			switch (mb.uMsg) {
 			case WM_LBUTTONUP:
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 230 && mb.y < 310) {
-					b.setb();
-					p.lookschedule();
+					b->setb();
+					p->lookschedule();
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 310 && mb.y < 390) {
-					b.setK();
-					beginclasses(&p);
-					fillcircle(300, 300, 50);
+					b->setK();
+					beginclasses(p);
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 390 && mb.y <= 470) {
-					b.setC();
+					b->setC();
 				}
 				if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
-					OutLessonS(p.Getid());
+					OutLessonS(p->Getid());
+					setfillcolor(WHITE);
 					fillroundrect(400, 350, 800, 450, 10, 10);
 					f.lfHeight = 50;
 					settextstyle(&f);
-					setfillcolor(WHITE);
+					
 					settextcolor(BLACK);
 					outtextxy(450, 375, "安全退出选课中..");
 					Sleep(2000); exit(0);
@@ -223,10 +225,9 @@ void GetIMEString(HWND hWnd, string& str)
 		ImmReleaseContext(hWnd, hIMC);
 	}
 }
-string getname() {
+void getname(string &str) {
 	HWND hWnd = GetHWnd();
 	BeginBatchDraw(); 
-	string str;
 	while (true){
 		if (_kbhit()){
 			char c = _getch();
@@ -239,7 +240,7 @@ string getname() {
 			}
 			else if (c == 27||c=='\r'||c=='\n') {
 				outtextxy(332, 148, str.c_str());
-				return str;
+				break;
 			}
 			else {
 				str += c;
@@ -255,13 +256,14 @@ string getname() {
 		outtextxy(332,148, str.c_str());
 		FlushBatchDraw();
 	}
-	return str;
+	FlushBatchDraw();
+	EndBatchDraw();
+	//return;// str;
 }
-string gettea() {
+void gettea(string &str) {
 	
 	HWND hWnd = GetHWnd();
 	BeginBatchDraw();
-	string str;
 	while (true) {
 		if (_kbhit()) {
 			char c = _getch();
@@ -274,7 +276,7 @@ string gettea() {
 			}
 			else if (c == 27 || c == '\r' || c == '\n') {
 				outtextxy(832, 148, str.c_str());
-				return str;
+				break;
 			}
 			else {
 				str += c;
@@ -290,8 +292,9 @@ string gettea() {
 		outtextxy(832, 148, str.c_str());
 		FlushBatchDraw();
 	}
-	
-	return str;
+	FlushBatchDraw();
+	EndBatchDraw();
+	//return ;
 }
 void py() {
 	Py_Initialize();
@@ -315,40 +318,41 @@ void py() {
 	Py_Finalize();
 }
 void show(int t, int num) {
-	LessonStu a;
+	LessonStu *a=new LessonStu;
 	num--;
-	if (t - 1 >= 0 && t - 1 < allLesson.size())a = allLesson[t - 1];
+	if (t - 1 >= 0 && t - 1 < allLesson.size())*a = allLesson[t - 1];
 	else return;
 	//a=allLesson[t-1];
 	char k = 'a';
 	char* p = new char[30];
-	_itoa(a.time.weekday, p, 10);
+	_itoa(a->time.weekday, p, 10);
 	outtextxy(230, 250 + 60 * num, p);
 	*p = k;
-	_itoa(a.time.order, p, 10);
+	_itoa(a->time.order, p, 10);
 	outtextxy(300, 250 + 60 * num, p);
 	*p = k;
-	_itoa(a.credit, p, 10);
+	_itoa(a->credit, p, 10);
 	outtextxy(380, 250 + 60 * num, p);
 	*p = k;
-	if (a.type) {
+	if (a->type) {
 		outtextxy(420, 250 + 60 * num, "否");
 	}
 	else {
 		outtextxy(420, 250+60 * num, "是");
 	}
-	_itoa(a.maxstu, p, 10);
+	_itoa(a->maxstu, p, 10);
 	outtextxy(500, 250 + 60 * num, p);
 	*p = k;
-	_itoa(a.nowstu, p, 10);
+	_itoa(a->nowstu, p, 10);
 	outtextxy(565, 250 + 60 * num, p);
 	*p = k;
-	string box = a.Tea;
+	string box = a->Tea;
 	strcpy(p, box.c_str());
 	outtextxy(630, 250 + 60 * num, p);
-	box = a.Name;
+	box = a->Name;
 	strcpy(p, box.c_str());
 	outtextxy(760, 250 + 60 * num, p);
+	delete a;
 }
 void beginclasses(PersonTea *p) {
 	int week = inf, type = inf, maxstu = 30, credit = inf, order = inf;
@@ -472,15 +476,11 @@ void beginclasses(PersonTea *p) {
 				}
 			}
 			
-			if (mb.y >= 148 && mb.y <= 182) {
-				if (mb.x >= 330 && mb.x <= 700) {//name
-					name=getname();
-					outtextxy(332, 148, name.c_str());
-				}
-				if (mb.x >= 830 && mb.x <= 1030) {//tea
-					tea=gettea();
-					outtextxy(832, 148, tea.c_str());
-				}
+			if (mb.y >= 148 && mb.y <= 182 && mb.x >= 330 && mb.x <= 700) {
+				getname(name);
+			}
+			else if (mb.y >= 148 && mb.y <= 182 && mb.x >= 830 && mb.x <= 1030) {//tea
+				gettea(tea);
 			}
 			break;
 		}//switch
@@ -488,23 +488,17 @@ void beginclasses(PersonTea *p) {
 			if (name != "" && tea != "") {
 				change = 0;
 				setfillcolor(WHITE);
-				fillcircle(100, 100, 50);
-				outtextxy(620, 180, name.c_str());
-				outtextxy(620, 10, tea.c_str());
 			}
-			
-			
 		}
 	}//while
 	change = 1;
-	setfillcolor(RED);
-	fillcircle(200, 200, 100);
-	setfillcolor(WHITE);
-	LessonStu tmp(credit, maxstu, week, order, name, tea, type);
-	SetLesson(tmp, ++all);
-	p->schedule[week][order].done = 1;
-	p->schedule[week][order] = tmp;
-	int d = 1;
+	LessonStu *tmp=new LessonStu(credit, maxstu, week+1, order, name, tea, type);
+	//week = order = 1;
+	tmp->setnow(0);
+	SetLesson(*tmp, ++all);
+	p->schedule[tmp->time.weekday][tmp->time.order].done = 1;
+	p->schedule[tmp->time.weekday][tmp->time.order] = *tmp;
+	setlinecolor(WHITE);
 	return;
 }
 void picklessons(PersonStu *p) {
@@ -678,10 +672,11 @@ void picklessons(PersonStu *p) {
 			}
 			if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
 				OutLessonS(p->Getid());
-				fillroundrect(400, 350, 800, 450, 10, 10);
+				
 				f.lfHeight = 50;
 				settextstyle(&f);
 				setfillcolor(WHITE);
+				fillroundrect(400, 350, 800, 450, 10, 10);
 				settextcolor(BLACK);
 				outtextxy(450, 375, "安全退出选课中..");
 				Sleep(2000); exit(0);
@@ -691,11 +686,12 @@ void picklessons(PersonStu *p) {
 				setfillcolor(WHITE);				
 				int line = (mb.y - 240) / 60+1 ;
 				if (line <= 0||line>=i)continue;
-				LessonStu wuwu = allLesson[ooo[line]-1];
-				if (!p->schedule[wuwu.time.weekday][wuwu.time.order].done) {
+				LessonStu* wuwu = new LessonStu; 
+				*wuwu=allLesson[ooo[line] - 1];
+				if (!p->schedule[wuwu->time.weekday][wuwu->time.order].done) {
 					fillcircle(1100, 180 + line * 60 + 30, 10);
-					p->schedule[wuwu.time.weekday][wuwu.time.order] = wuwu;
-					p->schedule[wuwu.time.weekday][wuwu.time.order].done = 1;
+					p->schedule[wuwu->time.weekday][wuwu->time.order] = *wuwu;
+					p->schedule[wuwu->time.weekday][wuwu->time.order].done = 1;
 					//change = 0;
 				}
 			} 
@@ -708,19 +704,20 @@ void picklessons(PersonStu *p) {
 }
 void OutLessonS(unsigned long long id) {
 	freopen("Student.txt", "a+", stdout);
-	PersonStu tmp = Stusaved[id];
+	PersonStu* tmp = new PersonStu;
+	*tmp=Stusaved[id];
 	int x = 0;
 	for (int i = 0; i <= 6; i++) {
 		for (int j = 0; j <= 4; j++) {
-			if (tmp.schedule[i][j].done)x++;
+			if (tmp->schedule[i][j].done)x++;
 		}
 	}
 	cout << x<<" ";//先存一共有几个课
 	for (int i = 0; i <= 6; i++) {
 		for (int j = 0; j <= 4; j++) {
-			if (tmp.schedule[i][j].done) {
+			if (tmp->schedule[i][j].done) {
 				for (int k = 0; k < allLesson.size(); k++) {
-					if (allLesson[k].Name == tmp.schedule[i][j].Name) {
+					if (allLesson[k].Name == tmp->schedule[i][j].Name) {
 						cout << k << " ";
 						break;
 					}
@@ -729,23 +726,25 @@ void OutLessonS(unsigned long long id) {
 			}//已知
 		}
 	}
+	delete tmp;
 	cout << endl;
 }
 void OutLessonT(unsigned long long id) {
 	freopen("Teacher.txt", "a+", stdout);
-	PersonTea tmp = Teasaved[id];
+	PersonTea* tmp = new PersonTea;
+	*tmp=Teasaved[id];
 	int x = 0;
 	for (int i = 0; i <= 6; i++) {
 		for (int j = 0; j <= 4; j++) {
-			if (tmp.schedule[i][j].done)x++;
+			if (tmp->schedule[i][j].done)x++;
 		}
 	}
 	cout << x << " ";
 	for (int i = 0; i <= 6; i++) {
 		for (int j = 0; j <= 4; j++) {
-			if (tmp.schedule[i][j].done) {
+			if (tmp->schedule[i][j].done) {
 				for (int k = 0; k < allLesson.size(); k++) {
-					if (allLesson[k].Name == tmp.schedule[i][j].Name) {
+					if (allLesson[k].Name == tmp->schedule[i][j].Name) {
 						cout << k << " ";
 						break;
 					}
@@ -754,6 +753,7 @@ void OutLessonT(unsigned long long id) {
 			}//已知
 		}
 	}
+	delete tmp;
 	cout << endl;
 }
 void GetLesson() {//用于把所有已经开设的课程放到有序号的表里
@@ -807,29 +807,32 @@ void GetPerson() {//用于读取已经存在的账号和账号相对应的课表
 	}
 	cin.clear();
 	freopen("Student.txt", "r", stdin);
+	LessonStu* tmp = new LessonStu;
 	while (cin >> id) {
 		cin >> n;
 		for (int i = 1; i <= n; i++) {
 			cin >> L;
-			LessonStu tmp = allLesson[L];
-			Stusaved[id].schedule[tmp.time.weekday][tmp.time.order] = tmp;
+			*tmp = allLesson[L];
+			Stusaved[id].schedule[tmp->time.weekday][tmp->time.order] = *tmp;
 		}
 		
 	}
 	cin.clear();
+	delete tmp;
 	freopen("Teacher.txt", "r", stdin);
+	LessonTea *tmpp=new LessonTea;
 	while (cin >> id) {
 		cin >> n;
 		for (int i = 1; i <= n; i++) {
 			cin >> L;
-			LessonTea tmp;//直接在初始化的时候赋值就不可以
-			tmp=allLesson[L];
-			Teasaved[id].schedule[tmp.time.weekday][tmp.time.order] = tmp;
+			//直接在初始化的时候赋值就不可以
+			*tmpp=allLesson[L];
+			Teasaved[id].schedule[tmpp->time.weekday][tmpp->time.order] = *tmpp;
 		}
 		
 	}
 	cin.clear();
-	
+	delete tmpp;
 }
 void SetLesson(LessonStu a,int n) {
 

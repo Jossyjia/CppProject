@@ -15,6 +15,7 @@ void BackTea::setb()
 	f.lfQuality = PROOF_QUALITY;
 	settextstyle(&f);
 	settextcolor(WHITE);
+	setlinecolor(WHITE);
 	outtextxy(20, 175, "ĞÕÃû:ÁúÃ¨");
 
 	for (int i = 0; i < 2; i++) {
