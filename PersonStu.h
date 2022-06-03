@@ -8,6 +8,7 @@ class PersonStu :
     public Person
 {
 public:
+    PersonStu& operator=(PersonStu& s);
     void xuan(LessonStu a);
     void tui(int week,int order);
     int lookscore(int w,int o);

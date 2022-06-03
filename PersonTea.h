@@ -9,6 +9,7 @@ class PersonTea :
 {
 public:
     void lookschedule();
+    PersonTea& operator=(PersonTea& s);
     LessonTea schedule[10][10];
 };
 

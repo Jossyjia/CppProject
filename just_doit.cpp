@@ -47,8 +47,8 @@ bool addaccount();
 void GetPerson();
 void SetLesson(LessonStu a,int n);
 void GetLesson();
-void OutLessonT(unsigned long long id);
-void OutLessonS(unsigned long long id);
+void OutLessonT(PersonTea *tmp);
+void OutLessonS(PersonStu *tmp);
 void picklessons(PersonStu *p);
 void show(int t, int num);
 void py();
@@ -73,6 +73,9 @@ int main()
 		cin >> ii;
 	cin.clear();
 	fclose(stdin);
+	while (_kbhit()) {
+		_getch();
+	}
 	if (account_type == 12) {
 		BackStu *b=new BackStu;
 		b->setb();
@@ -96,6 +99,7 @@ int main()
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 310 && mb.y < 390) {
 					b->setX();
 					picklessons(p);
+					Stusaved[ii] = *p;
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 390 && mb.y <= 470) {
 					b->setS();
@@ -110,7 +114,7 @@ int main()
 					*/
 				}
 				if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
-					OutLessonS(p->Getid());
+					OutLessonS(p);
 					fillroundrect(400, 350, 800, 450, 10, 10);
 					f.lfHeight = 50;
 					settextstyle(&f);
@@ -133,9 +137,10 @@ int main()
 		*p=Teasaved[ii];
 		p->setcode(cc);
 		p->setid(ii);
-		p->lookschedule();
+		p->lookschedule();	
 		change = 1;
 		while (change) {
+			Teasaved[ii] = *p;
 			LOGFONT f;
 			gettextstyle(&f);
 			MOUSEMSG mb;
@@ -150,17 +155,17 @@ int main()
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 310 && mb.y < 390) {
 					b->setK();
 					beginclasses(p);
+					//Teasaved[ii] = *p;
 				}
 				if (mb.x >= 0 && mb.x <= 150 && mb.y >= 390 && mb.y <= 470) {
 					b->setC();
 				}
 				if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
-					OutLessonS(p->Getid());
+					OutLessonT(p);
 					setfillcolor(WHITE);
 					fillroundrect(400, 350, 800, 450, 10, 10);
 					f.lfHeight = 50;
 					settextstyle(&f);
-					
 					settextcolor(BLACK);
 					outtextxy(450, 375, "安全退出选课中..");
 					Sleep(2000); exit(0);
@@ -227,7 +232,10 @@ void GetIMEString(HWND hWnd, string& str)
 }
 void getname(string &str) {
 	HWND hWnd = GetHWnd();
-	BeginBatchDraw(); 
+	/*string r;
+	GetIMEString(hWnd, r);
+	BeginBatchDraw();
+	r = "";*/
 	while (true){
 		if (_kbhit()){
 			char c = _getch();
@@ -373,7 +381,7 @@ void beginclasses(PersonTea *p) {
 			}
 
 			if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
-				OutLessonS(p->Getid());
+				OutLessonT(p);
 				fillroundrect(400, 350, 800, 450, 10, 10);
 				f.lfHeight = 50;
 				settextstyle(&f);
@@ -520,7 +528,7 @@ void picklessons(PersonStu *p) {
 			}
 
 			if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
-				OutLessonS(p->Getid());
+				OutLessonS(p);
 				fillroundrect(400, 350, 800, 450, 10, 10);
 				f.lfHeight = 50;
 				settextstyle(&f);
@@ -671,7 +679,7 @@ void picklessons(PersonStu *p) {
 				return;
 			}
 			if (mb.x >= 40 && mb.x <= 110 && mb.y >= 715 && mb.y <= 755) {
-				OutLessonS(p->Getid());
+				OutLessonS(p);
 				
 				f.lfHeight = 50;
 				settextstyle(&f);
@@ -702,23 +710,23 @@ void picklessons(PersonStu *p) {
 	}
 	change = 1;
 }
-void OutLessonS(unsigned long long id) {
+void OutLessonS(PersonStu *tmp) {
 	freopen("Student.txt", "a+", stdout);
-	PersonStu* tmp = new PersonStu;
-	*tmp=Stusaved[id];
 	int x = 0;
 	for (int i = 0; i <= 6; i++) {
-		for (int j = 0; j <= 4; j++) {
+		for (int j = 1; j <= 5; j++) {
 			if (tmp->schedule[i][j].done)x++;
 		}
 	}
+	if (!x)return;
+	cout << tmp->Getid() << " ";
 	cout << x<<" ";//先存一共有几个课
 	for (int i = 0; i <= 6; i++) {
-		for (int j = 0; j <= 4; j++) {
+		for (int j = 1; j <= 5; j++) {
 			if (tmp->schedule[i][j].done) {
 				for (int k = 0; k < allLesson.size(); k++) {
-					if (allLesson[k].Name == tmp->schedule[i][j].Name) {
-						cout << k << " ";
+					if (allLesson[k].Name == tmp->schedule[i][j].Name && allLesson[k].Tea == tmp->schedule[i][j].Tea) {
+						cout << k+1 << " ";
 						break;
 					}
 				}
@@ -726,26 +734,25 @@ void OutLessonS(unsigned long long id) {
 			}//已知
 		}
 	}
-	delete tmp;
 	cout << endl;
 }
-void OutLessonT(unsigned long long id) {
+void OutLessonT(PersonTea *tmp) {
 	freopen("Teacher.txt", "a+", stdout);
-	PersonTea* tmp = new PersonTea;
-	*tmp=Teasaved[id];
 	int x = 0;
 	for (int i = 0; i <= 6; i++) {
-		for (int j = 0; j <= 4; j++) {
+		for (int j = 1; j <= 5; j++) {
 			if (tmp->schedule[i][j].done)x++;
 		}
 	}
+	if (x == 0)return;
+	cout << tmp->Getid() << " ";
 	cout << x << " ";
 	for (int i = 0; i <= 6; i++) {
-		for (int j = 0; j <= 4; j++) {
+		for (int j = 1; j <= 5; j++) {
 			if (tmp->schedule[i][j].done) {
 				for (int k = 0; k < allLesson.size(); k++) {
-					if (allLesson[k].Name == tmp->schedule[i][j].Name) {
-						cout << k << " ";
+					if (allLesson[k].Name == tmp->schedule[i][j].Name && allLesson[k].Tea == tmp->schedule[i][j].Tea) {
+						cout << k+1 << " ";
 						break;
 					}
 				}
@@ -753,7 +760,6 @@ void OutLessonT(unsigned long long id) {
 			}//已知
 		}
 	}
-	delete tmp;
 	cout << endl;
 }
 void GetLesson() {//用于把所有已经开设的课程放到有序号的表里
@@ -812,8 +818,9 @@ void GetPerson() {//用于读取已经存在的账号和账号相对应的课表
 		cin >> n;
 		for (int i = 1; i <= n; i++) {
 			cin >> L;
-			*tmp = allLesson[L];
+			*tmp = allLesson[L-1];
 			Stusaved[id].schedule[tmp->time.weekday][tmp->time.order] = *tmp;
+			Stusaved[id].schedule[tmp->time.weekday][tmp->time.order].done = 1;
 		}
 		
 	}
@@ -826,8 +833,9 @@ void GetPerson() {//用于读取已经存在的账号和账号相对应的课表
 		for (int i = 1; i <= n; i++) {
 			cin >> L;
 			//直接在初始化的时候赋值就不可以
-			*tmpp=allLesson[L];
+			*tmpp=allLesson[L-1];
 			Teasaved[id].schedule[tmpp->time.weekday][tmpp->time.order] = *tmpp;
+			Teasaved[id].schedule[tmpp->time.weekday][tmpp->time.order].done = 1;
 		}
 		
 	}
@@ -835,7 +843,7 @@ void GetPerson() {//用于读取已经存在的账号和账号相对应的课表
 	delete tmpp;
 }
 void SetLesson(LessonStu a,int n) {
-
+	allLesson.push_back(a);
 	ofstream csvfile;
 	csvfile.open("Lesson.csv", ios::out|ios::app);
 	//csvfile << "Id" << ',' << "week" << ',' << "order" << ',' << "credit" << ',' << "type" << "," << "maxstu" << "," << "nowstu" << "," << "Teacher" << "," << "Name" << endl;
