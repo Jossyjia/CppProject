@@ -1,77 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="Background">
-    <Position X="1.5" Y="0.75" Width="1.5" />
+    <Position X="1.75" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Background.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Lesson">
-    <Position X="9.75" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAABAAAAAAAAgAAAAAAACQQAAAABCAAAAAAAAAAABAA=</HashCode>
-      <FileName>Lesson.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="LessonStu">
-    <Position X="10.75" Y="3.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAQBAAAAQAAAAAAAAAAIAAAAAAAAAAAAAAggAAAAAAA=</HashCode>
-      <FileName>LessonStu.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="LessonTea">
-    <Position X="8.5" Y="3.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAACAQgAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>LessonTea.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Person">
-    <Position X="6.5" Y="0.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAACAAgA=</HashCode>
-      <FileName>Person.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="PersonStu">
-    <Position X="4.5" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAgAAAAAAAAAAAEAAAAAAAAAAAAABAAAAAIACAAAA=</HashCode>
-      <FileName>PersonStu.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="PersonTea">
-    <Position X="6.5" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAABBAAAAAACAAAA=</HashCode>
-      <FileName>PersonTea.h</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="BackStu">
-    <Position X="0.5" Y="2.5" Width="1.5" />
+    <Position X="0.5" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAAAECAAAAAEiAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>BackStu.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BackTea">
-    <Position X="2.75" Y="2.75" Width="1.5" />
+    <Position X="2.75" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAACAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>BackTea.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Struct Name="Time" Collapsed="true">
-    <Position X="13.25" Y="0.5" Width="1.5" />
+  <Class Name="Lesson">
+    <Position X="6.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAgAAAAAAACQQAAAABCAAAAAAAAAAABCA=</HashCode>
+      <FileName>Lesson.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LessonStu">
+    <Position X="5.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBAAAAQAAAAAAAAAAIAAAAAAAAAAAAAAggAAAAAAA=</HashCode>
+      <FileName>LessonStu.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LessonTea">
+    <Position X="7.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAQAABAAAAACAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>LessonTea.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Person">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAIAAAAAAAAAAAIAAAAAAAAAAAAACAAgg=</HashCode>
+      <FileName>Person.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PersonStu">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAEAAAAAAAAAAAAABAAAAgIACAAAA=</HashCode>
+      <FileName>PersonStu.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PersonTea">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAgAACAAAA=</HashCode>
+      <FileName>PersonTea.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Time">
+    <Position X="10.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAABAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAQA=</HashCode>
       <FileName>Lesson.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Enum Name="week" Collapsed="true">
-    <Position X="13.25" Y="1.75" Width="1.5" />
+  <Enum Name="week">
+    <Position X="10.25" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAARAAAAAAAAAAAAAQAAEAAAAAEAAAAAIQ=</HashCode>
       <FileName>Lesson.h</FileName>
